@@ -13,8 +13,14 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*"],
+      "@Assets/*": ["src/renderer/assets/*"],
+      "@Components/*": ["src/renderer/components/*"],
+      "@Config/*": ["src/renderer/config/*"],
+      "@Layouts/*": ["src/renderer/layouts/*"],
+      "@Pages/*": ["src/renderer/pages/*"],
+      "@Types/*": ["src/renderer/types/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "config"]
 }
