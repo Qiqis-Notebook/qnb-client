@@ -4,7 +4,7 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
-export type Channels = "ipc-bridge";
+export type Channels = "ipc-bridge" | "data-reply";
 
 const electronHandler = {
   ipcRenderer: {
@@ -22,6 +22,15 @@ const electronHandler = {
     },
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+    getData(url: string, requestId: string) {
+      ipcRenderer.send("get-data", { url, requestId });
+    },
+    dataResponse(func: (...args: unknown[]) => void) {
+      ipcRenderer.once("data-reply", (_event, ...args) => func(...args));
+    },
+    abortRequest(requestId: string) {
+      ipcRenderer.send("abort-request", requestId);
     },
   },
 };

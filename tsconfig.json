@@ -22,5 +22,5 @@
       "@Types/*": ["src/renderer/types/*"]
     }
   },
-  "include": ["src/**/*", "config"]
+  "include": ["src/**/*", "src/config"]
 }

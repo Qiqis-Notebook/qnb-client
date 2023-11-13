@@ -24,6 +24,8 @@ const config: ForgeConfig = {
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
       mainConfig,
+      devContentSecurityPolicy:
+        "default-src 'self' http://127.0.0.1:3001 https://www.qiqis-notebook.com https://cdn.discordapp.com 'unsafe-eval' 'unsafe-inline'",
       renderer: {
         config: rendererConfig,
         entryPoints: [

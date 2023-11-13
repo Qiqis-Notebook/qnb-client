@@ -25,6 +25,7 @@ export const rendererConfig: Configuration = {
       "@Config": path.resolve(__dirname, "./src/renderer/config"),
       "@Layouts": path.resolve(__dirname, "./src/renderer/layouts"),
       "@Pages": path.resolve(__dirname, "./src/renderer/pages"),
+      "@config": path.resolve(__dirname, ".src/config"),
     },
     extensions: [".js", ".ts", ".jsx", ".tsx", ".css"],
   },

@@ -9,7 +9,7 @@ export default function RouteLayout() {
   const queryParams = new URLSearchParams(location.search);
   const queryParamValue = queryParams.get("q");
 
-  const [query, setQuery] = useState(queryParamValue);
+  const [query, setQuery] = useState(queryParamValue ?? "");
 
   const searchRoute = (e: FormEvent) => {
     e.preventDefault();

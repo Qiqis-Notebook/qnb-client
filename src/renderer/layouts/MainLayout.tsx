@@ -1,15 +1,15 @@
 // Components
 import NavBar from "@Components/NavBar";
-import { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 
-export default function MainLayout({ children }: { children: ReactNode }) {
+export default function MainLayout() {
   return (
     <div className="w-screen flex flew-row">
       {/* Navbar */}
-      <div className="w-52">
+      <div className="w-52 shrink-0">
         <NavBar />
       </div>
-      {children}
+      <Outlet />
     </div>
   );
 }

@@ -8,14 +8,18 @@ import "react-toastify/dist/ReactToastify.css";
 // Data
 import themes from "@Config/themes.json";
 
-// Components
-import MainLayout from "./layouts/MainLayout";
+// Layouts
+import MainLayout from "@Layouts/MainLayout";
+import FullPageLayout from "@Layouts/FullPageLayout";
+import RouteLayout from "@Layouts/RouteLayout";
+
+// Pages
 import MainPage from "@Pages/MainPage";
 import SettingPage from "@Pages/SettingPage";
 import FavoritePage from "@Pages/FavoritePage";
 import RecentPage from "@Pages/RecentPage";
 import SearchPage from "@Pages/SearchPage";
-import RouteLayout from "@Layouts/RouteLayout";
+import RoutePage from "@Pages/RoutePage";
 
 export default function App() {
   return (
@@ -25,8 +29,8 @@ export default function App() {
       defaultTheme="dark"
     >
       <Router>
-        <MainLayout>
-          <Routes>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<MainPage />} />
             <Route path="routes" element={<RouteLayout />}>
               <Route path="favorites" element={<FavoritePage />} />
@@ -34,8 +38,11 @@ export default function App() {
               <Route path="search" element={<SearchPage />} />
             </Route>
             <Route path="setting" element={<SettingPage />} />
-          </Routes>
-        </MainLayout>
+          </Route>
+          <Route path="route" element={<FullPageLayout />}>
+            <Route path=":rid" element={<RoutePage />} />
+          </Route>
+        </Routes>
       </Router>
     </ThemeProvider>
   );
