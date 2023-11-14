@@ -2,7 +2,7 @@ const isDev = process.env.NODE_ENV === "development";
 
 const DEV_URL = "http://127.0.0.1:3001";
 const PROD_URL = "https://www.qiqis-notebook.com";
-const API_URL = isDev ? DEV_URL + "/api" : PROD_URL + "/api";
 const BASE_URL = isDev ? DEV_URL : PROD_URL;
+const API_URL = BASE_URL + "/api";
 
-export { isDev, API_URL, BASE_URL };
+export { isDev, DEV_URL, PROD_URL, BASE_URL, API_URL };

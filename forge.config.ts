@@ -9,6 +9,8 @@ import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
 
+import { DEV_URL, PROD_URL } from "./config/constants";
+
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
@@ -24,8 +26,7 @@ const config: ForgeConfig = {
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
       mainConfig,
-      devContentSecurityPolicy:
-        "default-src 'self' http://127.0.0.1:3001 https://www.qiqis-notebook.com https://cdn.discordapp.com 'unsafe-eval' 'unsafe-inline'",
+      devContentSecurityPolicy: `default-src 'self' ${DEV_URL} ${PROD_URL} https://cdn.discordapp.com 'unsafe-eval' 'unsafe-inline'`,
       renderer: {
         config: rendererConfig,
         entryPoints: [

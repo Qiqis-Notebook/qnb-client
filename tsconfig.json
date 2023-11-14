@@ -16,11 +16,11 @@
       "*": ["node_modules/*"],
       "@Assets/*": ["src/renderer/assets/*"],
       "@Components/*": ["src/renderer/components/*"],
-      "@Config/*": ["src/renderer/config/*"],
+      "@Config/*": ["config/*"],
       "@Layouts/*": ["src/renderer/layouts/*"],
       "@Pages/*": ["src/renderer/pages/*"],
       "@Types/*": ["src/renderer/types/*"]
     }
   },
-  "include": ["src/**/*", "src/config"]
+  "include": ["src/**/*", "config/*"]
 }
