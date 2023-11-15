@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <div className="w-screen flex flew-row">
+    <div className="w-screen flex flew-row h-screen">
       {/* Navbar */}
       <div className="w-52 shrink-0">
         <NavBar />

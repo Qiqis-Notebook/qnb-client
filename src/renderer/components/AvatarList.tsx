@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { BASE_URL } from "@Config/constants";
 
 const ignoreList = ["i_23", "i_24", "i_103", "i_105", "i_300"];
-const groupLimit = 10;
+const groupLimit = 7;
 export default function AvatarList({ values = [] }: { values?: string[] }) {
   const renderList = values.filter((item) => !ignoreList.includes(item));
   function renderAvatar(values: string[], limit: number) {

@@ -5,13 +5,13 @@ module.exports = {
     themes: [
       {
         light: {
-          ...require("daisyui/src/theming/themes")["[data-theme=light]"],
+          ...require("daisyui/src/theming/themes")["light"],
           primary: "#E91E63",
           "primary-focus": "#C1134E",
           "primary-content": "#FFF",
         },
         dark: {
-          ...require("daisyui/src/theming/themes")["[data-theme=business]"],
+          ...require("daisyui/src/theming/themes")["business"],
           primary: "#E91E63",
           "primary-focus": "#C1134E",
           "primary-content": "#FFF",

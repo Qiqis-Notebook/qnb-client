@@ -20,6 +20,7 @@ import FavoritePage from "@Pages/FavoritePage";
 import RecentPage from "@Pages/RecentPage";
 import SearchPage from "@Pages/SearchPage";
 import RoutePage from "@Pages/RoutePage";
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
   return (
@@ -44,6 +45,18 @@ export default function App() {
           </Route>
         </Routes>
       </Router>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        limit={2}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </ThemeProvider>
   );
 }

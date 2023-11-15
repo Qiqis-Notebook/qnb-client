@@ -13,6 +13,7 @@ import { routes } from "@Config/routes";
 // Components
 import NavList from "@Components/NavList";
 import { Link } from "react-router-dom";
+import { isDev } from "@Config/constants";
 
 export default function NavBar() {
   const { theme, setTheme } = useTheme();
@@ -64,6 +65,7 @@ export default function NavBar() {
             <DiscordIcon />
           </a>
         </div>
+        {isDev && <div className="text-xs">Development Build</div>}
       </div>
     </div>
   );

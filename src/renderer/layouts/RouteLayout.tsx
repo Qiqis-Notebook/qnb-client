@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, Dispatch, SetStateAction } from "react";
 import { Outlet, useOutletContext, useLocation } from "react-router-dom";
 
 export default function RouteLayout() {
@@ -9,10 +9,14 @@ export default function RouteLayout() {
   const queryParams = new URLSearchParams(location.search);
   const queryParamValue = queryParams.get("q");
 
-  const [query, setQuery] = useState(queryParamValue ?? "");
+  const [value, setValue] = useState<string>(queryParamValue ?? "");
+  const [query, setQuery] = useState<string>(queryParamValue ?? "");
+  const [page, setPage] = useState<number>(1);
 
   const searchRoute = (e: FormEvent) => {
     e.preventDefault();
+    setQuery(value);
+    setPage(1);
   };
   return (
     <div className="flex flex-col gap-2 grow p-2">
@@ -23,17 +27,20 @@ export default function RouteLayout() {
             type="text"
             placeholder="Search"
             className="input input-bordered w-full"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
           />
         </form>
       </div>
       {/* Pages */}
-      <Outlet context={{ query }} />
+      <Outlet context={{ query, page: [page, setPage] }} />
     </div>
   );
 }
 
 export function useQuery() {
-  return useOutletContext<string>();
+  return useOutletContext<{
+    query: string;
+    page: [number, Dispatch<SetStateAction<number>>];
+  }>();
 }
