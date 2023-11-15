@@ -40,24 +40,15 @@ export default function MainPage() {
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId);
-
-        // Listen for the response from the main process
-        window.electron.ipcRenderer.dataResponse(
-          (arg: {
-            requestId: string;
-            data?: RouteListResponse;
-            error?: string;
-          }) => {
-            if (isMounted) {
-              if (arg.data) {
-                setFeatured(arg.data.data);
-              } else {
-                setFeatured([]);
-              }
+        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
+          if (isMounted) {
+            if (resp) {
+              setFeatured(resp.data.data as RouteDetail[]);
+            } else {
+              setFeatured([]);
             }
           }
-        );
+        });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);

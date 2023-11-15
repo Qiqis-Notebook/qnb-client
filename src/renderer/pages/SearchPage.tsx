@@ -37,24 +37,15 @@ export default function SearchPage() {
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId);
-
-        // Listen for the response from the main process
-        window.electron.ipcRenderer.dataResponse(
-          (arg: {
-            requestId: string;
-            data?: RoutesResponse;
-            error?: string;
-          }) => {
-            if (isMounted) {
-              if (arg.data) {
-                setData(arg.data);
-              } else {
-                setData(fallbackData);
-              }
+        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
+          if (isMounted) {
+            if (resp.data) {
+              setData(resp.data as RoutesResponse);
+            } else {
+              setData(fallbackData);
             }
           }
-        );
+        });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);

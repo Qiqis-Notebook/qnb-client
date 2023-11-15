@@ -13,7 +13,7 @@ import Logo from "@Assets/qiqiLogo.png";
 import { ArrowLeftIcon, CheckBadgeIcon } from "@heroicons/react/24/outline";
 
 // Types
-import { RouteDetail, RouteResponse } from "@Types/Routes";
+import { RouteDetail, RouteObject, RouteResponse } from "@Types/Routes";
 
 // Component
 import Linkify from "linkify-react";
@@ -76,28 +76,24 @@ export default function RoutePage() {
 
   // Check route exist
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId);
-
-        // Listen for the response from the main process
-        window.electron.ipcRenderer.dataResponse(
-          (arg: {
-            requestId: string;
-            data?: RouteResponse;
-            error?: string;
-          }) => {
-            if (arg.data) {
-              setData(arg.data.data);
+        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
+          if (isMounted) {
+            if (resp.data) {
+              setData(resp.data.data as RouteObject);
             }
             setLoading(false);
           }
-        );
+        });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
@@ -114,6 +110,7 @@ export default function RoutePage() {
 
     return () => {
       window.electron.ipcRenderer.abortRequest(id);
+      isMounted = false;
     };
   }, []);
 
@@ -155,7 +152,6 @@ export default function RoutePage() {
                 </div>
                 {/* Title */}
                 <div className="flex flex-row gap-1 w-full justify-center items-center">
-                  {/* Title */}
                   {data.verified && (
                     <CheckBadgeIcon
                       className="h-8 w-8 text-green-400"

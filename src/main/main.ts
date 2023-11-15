@@ -24,7 +24,7 @@ ipcMain.on("ipc-bridge", async (event, arg) => {
 });
 
 // Fetch data from any URL and send it to the renderer process
-ipcMain.on("get-data", async (event, { url, requestId }) => {
+ipcMain.handle("get-data", async (event, { url, requestId }) => {
   try {
     // Cancel any existing request with the same ID before making a new one
     const existingCancelToken = requestCancelTokens.get(requestId);
@@ -42,14 +42,10 @@ ipcMain.on("get-data", async (event, { url, requestId }) => {
     };
 
     const response = await axios.get(`${API_URL}${url}`, config);
-    event.reply("data-reply", { requestId, data: response.data });
+    return { requestId, data: response.data };
   } catch (error) {
-    if (axios.isCancel(error)) {
-      console.log("Request canceled:", error.message);
-    } else {
-      console.error("Error fetching data:", error.message);
-      event.reply("data-reply", { requestId, error: error.message });
-    }
+    console.error(error.message);
+    return { requestId, error: error.message };
   } finally {
     // Remove the cancel token source after the request is completed
     requestCancelTokens.delete(requestId);
