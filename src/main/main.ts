@@ -159,15 +159,15 @@ app.on("activate", () => {
   }
 });
 
-function launchWindow(url: any, minimize: boolean) {
+function launchWindow(url: string, minimize: boolean) {
   if (overlayWindow) {
     overlayWindow.loadURL(url);
   } else {
     createOverlayWindow(url);
   }
-  if (mainWindow && minimize) {
-    mainWindow.minimize();
-  }
+  // if (mainWindow && minimize) {
+  //   mainWindow.minimize();
+  // }
 }
 
 function closeWindow() {

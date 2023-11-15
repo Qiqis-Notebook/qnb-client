@@ -22,9 +22,11 @@ export const rendererConfig: Configuration = {
     alias: {
       "@Assets": path.resolve(__dirname, "./src/renderer/assets"),
       "@Components": path.resolve(__dirname, "./src/renderer/components"),
+      "@Context": path.resolve(__dirname, "./src/renderer/context"),
       "@Config": path.resolve(__dirname, "./config"),
       "@Layouts": path.resolve(__dirname, "./src/renderer/layouts"),
       "@Pages": path.resolve(__dirname, "./src/renderer/pages"),
+      "@Utils": path.resolve(__dirname, "./src/renderer/utils"),
     },
     extensions: [".js", ".ts", ".jsx", ".tsx", ".css"],
   },

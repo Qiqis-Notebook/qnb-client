@@ -1,10 +1,13 @@
 import { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "next-themes";
 
 // CSS
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
+
+// Context
+import { SettingsProvider } from "./context/SettingsContext";
+import { ThemeProvider } from "next-themes";
 
 // Data
 import themes from "@Config/themes.json";
@@ -44,39 +47,41 @@ export default function App() {
     };
   }, []);
   return (
-    <ThemeProvider
-      attribute="data-theme"
-      themes={themes.map((item) => item.value)}
-      defaultTheme="dark"
-    >
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route path="/" element={<MainPage />} />
-            <Route path="routes" element={<RouteLayout />}>
-              <Route path="favorites" element={<FavoritePage />} />
-              <Route path="recent" element={<RecentPage />} />
-              <Route path="search" element={<SearchPage />} />
+    <SettingsProvider>
+      <ThemeProvider
+        attribute="data-theme"
+        themes={themes.map((item) => item.value)}
+        defaultTheme="dark"
+      >
+        <Router>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route path="/" element={<MainPage />} />
+              <Route path="routes" element={<RouteLayout />}>
+                <Route path="favorites" element={<FavoritePage />} />
+                <Route path="recent" element={<RecentPage />} />
+                <Route path="search" element={<SearchPage />} />
+              </Route>
+              <Route path="setting" element={<SettingPage />} />
             </Route>
-            <Route path="setting" element={<SettingPage />} />
-          </Route>
-          <Route path="route" element={<FullPageLayout />}>
-            <Route path=":rid" element={<RoutePage />} />
-          </Route>
-        </Routes>
-      </Router>
-      <ToastContainer
-        position="bottom-left"
-        autoClose={5000}
-        limit={2}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-    </ThemeProvider>
+            <Route path="route" element={<FullPageLayout />}>
+              <Route path=":rid" element={<RoutePage />} />
+            </Route>
+          </Routes>
+        </Router>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          limit={2}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </ThemeProvider>
+    </SettingsProvider>
   );
 }

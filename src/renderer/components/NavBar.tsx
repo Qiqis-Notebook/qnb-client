@@ -37,7 +37,7 @@ export default function NavBar() {
       <div className="px-4 pt-2 grow">
         <NavList routes={routes} />
       </div>
-      <div className="px-6 text-sm">
+      <div className="px-6">
         <select
           className="select-bordered select select-sm w-full font-normal"
           value={theme}
@@ -51,7 +51,7 @@ export default function NavBar() {
         </select>
       </div>
       {/* Bottom info panel */}
-      <div className="px-6 pb-6 text-sm">
+      <div className="px-6 pb-6">
         <hr className="border-1 my-4 border-base-content opacity-20" />
         <div className="flex flex-row gap-1">
           <Link to="/setting" className="btn-ghost btn-square btn-sm btn">

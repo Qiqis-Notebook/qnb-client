@@ -23,6 +23,7 @@ import AvatarList from "@Components/AvatarList";
 import Favorite from "@Components/Favorite";
 import Divider from "@Components/Divider";
 import { BASE_URL } from "@Config/constants";
+import Timer from "@Components/Timer";
 
 export default function RoutePage() {
   let { rid } = useParams();
@@ -35,6 +36,7 @@ export default function RoutePage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<RouteDetail | null>(null);
   const [launched, setLaunched] = useState(false);
+  const [startTimer, setStartTimer] = useState(false);
   const launchedRef = useRef<boolean>();
   launchedRef.current = launched;
 
@@ -48,10 +50,12 @@ export default function RoutePage() {
       true // User setting
     );
     setLaunched(true);
+    setStartTimer(true);
   };
   const handleClose = () => {
     window.electron.ipcRenderer.closeWindow();
     setLaunched(false);
+    setStartTimer(false);
   };
   const addToRecent = async (routeDetail: RouteDetail) => {
     try {
@@ -117,6 +121,7 @@ export default function RoutePage() {
     window.electron.ipcRenderer.on("window-event", (arg) => {
       if (arg === 0 && isMounted && launchedRef.current) {
         setLaunched(false);
+        setStartTimer(false);
       }
     });
 
@@ -137,14 +142,35 @@ export default function RoutePage() {
     handleOpen();
   }, [data]);
 
+  const debounce = (func: () => void, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+
+    return () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(), delay);
+    };
+  };
+
+  const handleRestart = debounce(() => {
+    // Set StartTime to false first
+    setStartTimer(false);
+
+    // After render, call handleOpen
+    setTimeout(() => {
+      handleOpen();
+    }, 0);
+  }, 1000); // Debounce restart event (1 second)
+
   return (
     <div className="relative h-full">
       <div className="h-full w-full absolute z-10 p-2 flex flex-col mx-auto">
-        {/* Back */}
-        <div>
+        <div className="flex justify-between items-center">
+          {/* Back */}
           <button className="btn btn-ghost btn-square" onClick={handleBack}>
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
+          {/* Timer */}
+          <Timer start={startTimer} />
         </div>
         {loading ? (
           <div className="w-full grow justify-center items-center flex">
@@ -197,7 +223,14 @@ export default function RoutePage() {
                 <div className="flex gap-2 w-full">
                   <Favorite routeDetail={data} />
                   <button
-                    className={`btn grow ${
+                    className="btn w-1/2"
+                    disabled={!launched}
+                    onClick={handleRestart}
+                  >
+                    Restart
+                  </button>
+                  <button
+                    className={`btn w-1/2 ${
                       launched ? "btn-error" : "btn-success"
                     }`}
                     onClick={() => (launched ? handleClose() : handleOpen())}

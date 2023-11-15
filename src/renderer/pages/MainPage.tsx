@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { MAX_ROUTE_DISPLAY } from "@Config/limits";
 
 // Types
-import { RouteListResponse, RouteDetail } from "@Types/Routes";
+import { RouteDetail } from "@Types/Routes";
 import DBFavorite from "../db/type/DBFavorite";
 import DBRecent from "../db/type/DBRecent";
 
@@ -13,8 +13,10 @@ import DBRecent from "../db/type/DBRecent";
 import { favoritesTable, recentTable } from "../db";
 import { toast } from "react-toastify";
 
+// Assets
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+
 // Components
-import Spinner from "@Components/Spinner";
 import Divider from "@Components/Divider";
 import FullCard from "@Components/cards/FullCard";
 import QuickCard from "@Components/cards/QuickCard";
@@ -97,7 +99,7 @@ export default function MainPage() {
   return (
     <div className="flex flex-col gap-2 grow p-2 overflow-y-auto">
       <div className="flex items-center">
-        <form className="w-full" onSubmit={onSubmit}>
+        <form className="w-full relative" onSubmit={onSubmit}>
           <input
             type="text"
             placeholder="Search"
@@ -105,6 +107,9 @@ export default function MainPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          <button type="submit" className="absolute inset-y-0 right-0 px-2">
+            <MagnifyingGlassIcon className="h-6 w-6" />
+          </button>
         </form>
       </div>
       {/* Featured */}

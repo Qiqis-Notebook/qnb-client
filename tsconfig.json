@@ -16,10 +16,12 @@
       "*": ["node_modules/*"],
       "@Assets/*": ["src/renderer/assets/*"],
       "@Components/*": ["src/renderer/components/*"],
+      "@Context/*": ["src/renderer/context/*"],
       "@Config/*": ["config/*"],
       "@Layouts/*": ["src/renderer/layouts/*"],
       "@Pages/*": ["src/renderer/pages/*"],
-      "@Types/*": ["src/renderer/types/*"]
+      "@Types/*": ["src/renderer/types/*"],
+      "@Utils/*": ["src/renderer/utils/*"]
     }
   },
   "include": ["src/**/*", "config/*"]

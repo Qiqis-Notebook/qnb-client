@@ -32,7 +32,7 @@ function NavList({ routes }: { routes: typeof RouteProp }) {
               >
                 <div
                   className={classNames(
-                    "flex h-8 items-center rounded px-2 text-sm",
+                    "flex h-8 items-center rounded px-2 font-normal",
                     {
                       "bg-primary text-primary-content":
                         pathname === object.url,
@@ -48,13 +48,13 @@ function NavList({ routes }: { routes: typeof RouteProp }) {
                 </div>
               </NavLink>
             ) : (
-              <div className="flex h-8 items-center rounded px-2 text-sm">
+              <div className="flex h-8 items-center rounded px-2">
                 {object.icon && <Icon {...iconStyle} />}
-                <div className="mx-2 font-semibold">{object.title}</div>
+                <div className="mx-2 font-normal">{object.title}</div>
               </div>
             )}
             {object.child && (
-              <div className="flex flex-col space-y-1 pt-2">
+              <div className="flex flex-col space-y-1">
                 <hr className="border-1 border-base-content opacity-20" />
                 {object.child.map((item, j) => {
                   const ItemIcon = item?.icon;
@@ -70,7 +70,7 @@ function NavList({ routes }: { routes: typeof RouteProp }) {
                     >
                       <div
                         className={classNames(
-                          "flex h-8 items-center rounded pl-6 text-sm",
+                          "flex h-8 items-center rounded pl-6 font-light",
                           {
                             "bg-primary text-primary-content":
                               pathname === item.url,
