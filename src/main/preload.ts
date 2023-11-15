@@ -4,7 +4,7 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
-export type Channels = "ipc-bridge" | "data-reply";
+export type Channels = "ipc-bridge" | "data-reply" | "window-event";
 
 const electronHandler = {
   ipcRenderer: {
@@ -31,6 +31,12 @@ const electronHandler = {
     },
     abortRequest(requestId: string) {
       ipcRenderer.send("abort-request", requestId);
+    },
+    openWindow(url: string, minimize: boolean = true) {
+      ipcRenderer.send("open-window", { url, minimize });
+    },
+    closeWindow() {
+      ipcRenderer.send("close-window");
     },
   },
 };

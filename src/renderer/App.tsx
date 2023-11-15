@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 
@@ -20,9 +21,28 @@ import FavoritePage from "@Pages/FavoritePage";
 import RecentPage from "@Pages/RecentPage";
 import SearchPage from "@Pages/SearchPage";
 import RoutePage from "@Pages/RoutePage";
-import { ToastContainer } from "react-toastify";
+
+// Components
+import { ToastContainer, toast } from "react-toastify";
 
 export default function App() {
+  // Connection status
+  useEffect(() => {
+    const updateOnlineStatus = () => {
+      navigator.onLine
+        ? toast.success("Connected", { autoClose: false })
+        : toast.error("Connection lost", { autoClose: false });
+    };
+
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+
+    // Cleanup function to remove event listeners
+    return () => {
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
+    };
+  }, []);
   return (
     <ThemeProvider
       attribute="data-theme"

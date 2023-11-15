@@ -1,4 +1,4 @@
-import { useEffect, useState, useId, Fragment } from "react";
+import { useEffect, useState, useId, Fragment, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 // Config
@@ -22,6 +22,7 @@ import RouteAuthor from "@Components/RouteAuthor";
 import AvatarList from "@Components/AvatarList";
 import Favorite from "@Components/Favorite";
 import Divider from "@Components/Divider";
+import { BASE_URL } from "@Config/constants";
 
 export default function RoutePage() {
   let { rid } = useParams();
@@ -34,17 +35,22 @@ export default function RoutePage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<RouteDetail | null>(null);
   const [launched, setLaunched] = useState(false);
+  const launchedRef = useRef<boolean>();
+  launchedRef.current = launched;
 
   // Functions
   const handleBack = () => {
     navigate(-1);
   };
   const handleOpen = () => {
-    // TODO: Open route
+    window.electron.ipcRenderer.openWindow(
+      `${BASE_URL}/embed/route/${data._id}`,
+      true // User setting
+    );
     setLaunched(true);
   };
   const handleClose = () => {
-    // TODO: Close route
+    window.electron.ipcRenderer.closeWindow();
     setLaunched(false);
   };
   const addToRecent = async (routeDetail: RouteDetail) => {
@@ -107,6 +113,12 @@ export default function RoutePage() {
     } else {
       fetchData(`/gateway/route?id=${rid}`, id);
     }
+
+    window.electron.ipcRenderer.on("window-event", (arg) => {
+      if (arg === 0 && isMounted && launchedRef.current) {
+        setLaunched(false);
+      }
+    });
 
     return () => {
       window.electron.ipcRenderer.abortRequest(id);
