@@ -30,28 +30,6 @@ export default function SettingPage() {
         <div className="flex flex-col gap-2">
           <h2 className="text-xl font-semibold">Main Window</h2>
           <div className="divider my-0" />
-          {/* Size and Position */}
-          <div className="flex flex-col gap-2">
-            <h2 className="text-lg">Save window properties</h2>
-            <div className="flex gap-1 justify-between items-center">
-              <p>Save the window size and location.</p>
-              <input
-                type="checkbox"
-                className="toggle"
-                checked={settings.mainWindow.save}
-                onChange={(e) =>
-                  updateSettings({
-                    ...settings,
-                    mainWindow: {
-                      ...settings.mainWindow,
-                      save: e.target.checked,
-                    },
-                  })
-                }
-              />
-            </div>
-          </div>
-          <div className="divider h-1 my-0" />
           {/* Auto minimize */}
           <div className="flex flex-col gap-2">
             <h2 className="text-lg">Minimize</h2>
@@ -106,28 +84,6 @@ export default function SettingPage() {
         <div className="flex flex-col gap-2">
           <h2 className="text-xl font-semibold">Route Window</h2>
           <div className="divider my-0" />
-          {/* Size and Position */}
-          <div className="flex flex-col gap-2">
-            <h2 className="text-lg">Save window properties</h2>
-            <div className="flex gap-1 justify-between items-center">
-              <p>Save the window size and location.</p>
-              <input
-                type="checkbox"
-                className="toggle"
-                checked={settings.routeWindow.save}
-                onChange={(e) =>
-                  updateSettings({
-                    ...settings,
-                    routeWindow: {
-                      ...settings.routeWindow,
-                      save: e.target.checked,
-                    },
-                  })
-                }
-              />
-            </div>
-          </div>
-          <div className="divider h-1 my-0" />
           {/* Auto-start */}
           <div className="flex flex-col gap-2">
             <h2 className="text-lg">Auto-start</h2>
@@ -163,6 +119,7 @@ export default function SettingPage() {
                   value={settings.routeWindow.opacity * 100}
                   className="range"
                   step="10"
+                  title={`${settings.routeWindow.opacity * 100}%`}
                   onChange={(e) => {
                     if (e.target.value === "0") return; // Faster check without parsing
 

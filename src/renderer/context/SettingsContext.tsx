@@ -17,8 +17,8 @@ const SettingsContext = createContext<SettingsContextProps | undefined>(
 );
 
 const defaultSettings = {
-  mainWindow: { minimize: true, save: true, reducedColor: false },
-  routeWindow: { autoStart: true, save: true, opacity: 1 },
+  mainWindow: { minimize: true, reducedColor: false },
+  routeWindow: { autoStart: true, opacity: 1 },
   keybinds: {
     prev: { shift: false, ctrl: true, alt: false, key: "Left" },
     next: { shift: false, ctrl: true, alt: false, key: "Right" },

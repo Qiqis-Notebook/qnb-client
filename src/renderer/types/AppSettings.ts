@@ -7,12 +7,10 @@ export interface KeyBinds {
 export interface AppSettings {
   mainWindow: {
     minimize: boolean;
-    save: boolean;
     reducedColor: boolean;
   };
   routeWindow: {
     autoStart: boolean;
-    save: boolean;
     opacity: number;
   };
   keybinds: {

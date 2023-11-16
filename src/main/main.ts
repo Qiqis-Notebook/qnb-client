@@ -147,6 +147,13 @@ const createWindow = (): void => {
   // Other window setup
   mainWindow.removeMenu();
 
+  // Close overlay window on close
+  mainWindow.on("close", () => {
+    if (overlayWindow) {
+      overlayWindow.close();
+    }
+  });
+
   // Open the DevTools.
   if (isDev) {
     mainWindow.webContents.openDevTools({ mode: "detach" });
@@ -164,10 +171,10 @@ function createOverlayWindow(url: string) {
     overlayWindow.close();
   }
   overlayWindow = new BrowserWindow({
-    width: 400,
-    height: 375,
-    minWidth: 400,
     minHeight: 375,
+    minWidth: 400,
+    height: 375,
+    width: 400,
     backgroundColor: "#000",
     alwaysOnTop: true,
     icon: nativeImage.createFromPath(iconPath),
@@ -179,7 +186,6 @@ function createOverlayWindow(url: string) {
   // Other window setup
   overlayWindow.removeMenu();
   overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true }); // Mac
-  // TODO: Save resize and position
 
   // Global shortcut
   const keybinds = appSettings?.keybinds;
@@ -229,8 +235,8 @@ function createOverlayWindow(url: string) {
     }
   }
 
-  // On close
-  overlayWindow.addListener("close", () => {
+  // Clean up on close
+  overlayWindow.on("close", () => {
     overlayWindow = null;
     globalShortcut.unregisterAll();
     if (mainWindow) {
