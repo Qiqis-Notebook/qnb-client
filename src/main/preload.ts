@@ -2,6 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
+import { AppSettings } from "@Types/AppSettings";
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
 export type Channels = "data-reply" | "window-event";
@@ -29,11 +30,14 @@ const electronHandler = {
     abortRequest(requestId: string) {
       ipcRenderer.send("abort-request", requestId);
     },
-    openWindow(url: string, minimize: boolean = true) {
-      ipcRenderer.send("open-window", { url, minimize });
+    openWindow(url: string) {
+      ipcRenderer.send("open-window", url);
     },
     closeWindow() {
       ipcRenderer.send("close-window");
+    },
+    updateSetting(settings: AppSettings) {
+      ipcRenderer.send("settings", settings);
     },
   },
 };

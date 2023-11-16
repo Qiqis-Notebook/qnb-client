@@ -1,7 +1,14 @@
+export interface KeyBinds {
+  shift: boolean;
+  ctrl: boolean;
+  alt: boolean;
+  key: string;
+}
 export interface AppSettings {
   mainWindow: {
     minimize: boolean;
     save: boolean;
+    reducedColor: boolean;
   };
   routeWindow: {
     autoStart: boolean;
@@ -9,9 +16,9 @@ export interface AppSettings {
     opacity: number;
   };
   keybinds: {
-    prev: string;
-    next: string;
-    prevTp: string;
-    nextTp: string;
+    prev: KeyBinds;
+    next: KeyBinds;
+    prevTp: KeyBinds;
+    nextTp: KeyBinds;
   };
 }

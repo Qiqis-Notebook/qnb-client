@@ -1,8 +1,61 @@
-import { app, BrowserWindow, ipcMain, nativeImage, shell } from "electron";
+import {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  nativeImage,
+  shell,
+} from "electron";
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 
 // Constants
 import { isDev, API_URL } from "@Config/constants";
+
+// Utils
+import isAccelerator from "electron-is-accelerator";
+
+// Types
+import { AppSettings } from "@Types/AppSettings";
+interface KeyBinds {
+  shift: boolean;
+  ctrl: boolean;
+  alt: boolean;
+  key: string;
+}
+
+/**
+ * Checks that a keybind is valid
+ * @param keybind Keybind to check
+ * @returns Error message or null if no error
+ */
+function translateToAccelerator(keybind: KeyBinds): string | null {
+  if (!keybind.alt && !keybind.ctrl && !keybind.shift) {
+    return null;
+  }
+  if (!keybind.key) {
+    return null;
+  }
+
+  let keys = [];
+  if (keybind.ctrl) {
+    keys.push("CommandOrControl");
+  }
+  if (keybind.shift) {
+    keys.push("Shift");
+  }
+  if (keybind.alt) {
+    keys.push("Alt");
+  }
+  keys.push(keybind.key);
+
+  const accelerator = keys.join("+");
+  if (isAccelerator(accelerator)) {
+    return accelerator;
+  } else {
+    return null;
+  }
+}
+
 const iconPath =
   process.platform !== "darwin" ? "assets/favicon.ico" : "assets/favicon.icns";
 
@@ -18,12 +71,6 @@ const requestCancelTokens: Map<string, CancelTokenSource> = new Map();
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
-
-ipcMain.on("ipc-bridge", async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply("ipc-bridge", msgTemplate("pong"));
-});
 
 // Fetch data from any URL and send it to the renderer process
 ipcMain.handle("get-data", async (event, { url, requestId }) => {
@@ -63,12 +110,17 @@ ipcMain.on("abort-request", (event, requestId) => {
   }
 });
 
-ipcMain.on("open-window", async (event, { url, minimize }) => {
-  launchWindow(url, minimize);
+ipcMain.on("open-window", async (event, url) => {
+  launchWindow(url);
 });
 
 ipcMain.on("close-window", async (event) => {
   closeWindow();
+});
+
+let appSettings: AppSettings | null = null;
+ipcMain.on("settings", async (event, settings: AppSettings) => {
+  appSettings = settings;
 });
 
 // Windows
@@ -120,6 +172,7 @@ function createOverlayWindow(url: string) {
     alwaysOnTop: true,
     icon: nativeImage.createFromPath(iconPath),
     title: "Qiqi's Notebook",
+    opacity: appSettings?.routeWindow.opacity ?? 1,
   });
   overlayWindow.loadURL(url);
 
@@ -128,9 +181,58 @@ function createOverlayWindow(url: string) {
   overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true }); // Mac
   // TODO: Save resize and position
 
+  // Global shortcut
+  const keybinds = appSettings?.keybinds;
+  if (keybinds) {
+    // Prev
+    const prevAccelerator = translateToAccelerator(keybinds.prev);
+    if (prevAccelerator) {
+      globalShortcut.register(prevAccelerator, () => {
+        console.log("Prev"); // Somehow improves the execution time of this function, likely due to timing, event loop or other factors, needs more investigation
+        overlayWindow.webContents.executeJavaScript(
+          `document.getElementById("route-prev").click()`
+        );
+      });
+    }
+
+    // Next
+    const nextAccelerator = translateToAccelerator(keybinds.next);
+    if (nextAccelerator) {
+      globalShortcut.register(nextAccelerator, () => {
+        console.log("Next"); // Somehow improves the execution time of this function, likely due to timing, event loop or other factors, needs more investigation
+        overlayWindow.webContents.executeJavaScript(
+          `document.getElementById("route-next").click()`
+        );
+      });
+    }
+
+    // Prev TP
+    const prevTpAccelerator = translateToAccelerator(keybinds.prevTp);
+    if (prevTpAccelerator) {
+      globalShortcut.register(prevTpAccelerator, () => {
+        console.log("Prev TP"); // Somehow improves the execution time of this function, likely due to timing, event loop or other factors, needs more investigation
+        overlayWindow.webContents.executeJavaScript(
+          `document.getElementById("route-prev-tp").click()`
+        );
+      });
+    }
+
+    // Next TP
+    const nextTpAccelerator = translateToAccelerator(keybinds.nextTp);
+    if (nextAccelerator) {
+      globalShortcut.register(nextTpAccelerator, () => {
+        console.log("Next TP"); // Somehow improves the execution time of this function, likely due to timing, event loop or other factors, needs more investigation
+        overlayWindow.webContents.executeJavaScript(
+          `document.getElementById("route-next-tp").click()`
+        );
+      });
+    }
+  }
+
   // On close
   overlayWindow.addListener("close", () => {
     overlayWindow = null;
+    globalShortcut.unregisterAll();
     if (mainWindow) {
       mainWindow.webContents.send("window-event", 0);
     }
@@ -159,15 +261,15 @@ app.on("activate", () => {
   }
 });
 
-function launchWindow(url: string, minimize: boolean) {
+function launchWindow(url: string) {
   if (overlayWindow) {
     overlayWindow.loadURL(url);
   } else {
     createOverlayWindow(url);
   }
-  // if (mainWindow && minimize) {
-  //   mainWindow.minimize();
-  // }
+  if (mainWindow && appSettings?.mainWindow.minimize) {
+    mainWindow.minimize();
+  }
 }
 
 function closeWindow() {

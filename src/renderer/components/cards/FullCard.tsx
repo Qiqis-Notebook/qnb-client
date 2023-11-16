@@ -1,5 +1,8 @@
 import { ReactNode } from "react";
 
+// Context
+import { useSettings } from "@Context/SettingsContext";
+
 // Types
 import { RouteDetail } from "@Types/Routes";
 import DBFavorite from "../../db/type/DBFavorite";
@@ -19,19 +22,21 @@ import AvatarList from "@Components/AvatarList";
 
 export default function FullCard({
   route,
-  pinned,
   showBadge = false,
   children,
 }: {
   route: RouteDetail | DBFavorite | DBRecent;
-  pinned?: boolean;
   showBadge?: boolean;
   children?: ReactNode;
 }) {
+  const { settings } = useSettings();
+
   return (
     <div
       className={`w-full h-full rounded-lg bg-base-200 p-2 flex gap-1 flex-col ${
-        route.featured && "border border-primary"
+        route.featured &&
+        !settings.mainWindow.reducedColor &&
+        "border border-primary"
       }`}
     >
       {/* Header */}

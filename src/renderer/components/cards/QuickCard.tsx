@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
+// Context
+import { useSettings } from "@Context/SettingsContext";
+
 // Types
 import DBFavorite from "../../db/type/DBFavorite";
 import DBRecent from "../../db/type/DBRecent";
@@ -14,6 +17,7 @@ export default function QuickCard({
   route: DBFavorite | DBRecent;
   recent?: boolean;
 }) {
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const isSameDay = (date1: Date, date2: Date): boolean => {
     return date1.toLocaleDateString() === date2.toLocaleDateString();
@@ -23,7 +27,11 @@ export default function QuickCard({
   const currentDate = new Date();
   return (
     <button
-      className="btn w-full rounded-lg bg-base-200 p-2 flex flex-row gap-1 justify-center items-left"
+      className={`btn w-full rounded-lg bg-base-200 p-2 flex flex-row gap-1 justify-center items-left ${
+        route.featured &&
+        !settings.mainWindow.reducedColor &&
+        "border border-primary"
+      }`}
       onClick={() => navigate(`/route/${route._id}`)}
     >
       {/* Title */}

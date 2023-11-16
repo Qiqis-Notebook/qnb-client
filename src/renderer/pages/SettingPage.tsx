@@ -1,5 +1,13 @@
-import KeyCaptureButton from "@Components/KeyCaptureButton";
+// Context
 import { useSettings } from "@Context/SettingsContext";
+
+// Components
+import KeyCaptureButton from "@Components/KeyCaptureButton";
+import checkKeybindError from "@Utils/checkKeybindError";
+
+// Utils
+import { toast } from "react-toastify";
+import isDuplicateKeybind from "@Utils/isDuplicateKeybind";
 
 function safeParseFloat(value: string, fallback: number): number {
   try {
@@ -20,7 +28,7 @@ export default function SettingPage() {
       <div className="w-full flex flex-col gap-8">
         {/* Main Window */}
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl">Main Window</h2>
+          <h2 className="text-xl font-semibold">Main Window</h2>
           <div className="divider my-0" />
           {/* Size and Position */}
           <div className="flex flex-col gap-2">
@@ -49,8 +57,8 @@ export default function SettingPage() {
             <h2 className="text-lg">Minimize</h2>
             <div className="flex gap-1 justify-between items-center">
               <p>
-                Automatically minimize then main window when route window is
-                loaded.
+                Automatically minimize then main window when route window
+                launches.
               </p>
               <input
                 type="checkbox"
@@ -68,10 +76,35 @@ export default function SettingPage() {
               />
             </div>
           </div>
+          <div className="divider h-1 my-0" />
+          {/* Reduced color */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg">Reduced color</h2>
+            <div className="flex gap-1 justify-between items-center">
+              <div>
+                <p>Remove accent colors on some components.</p>
+                <p>Affects "Featured" route border</p>
+              </div>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={settings.mainWindow.reducedColor}
+                onChange={(e) =>
+                  updateSettings({
+                    ...settings,
+                    mainWindow: {
+                      ...settings.mainWindow,
+                      reducedColor: e.target.checked,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
         </div>
         {/* Route Window */}
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl">Route Window</h2>
+          <h2 className="text-xl font-semibold">Route Window</h2>
           <div className="divider my-0" />
           {/* Size and Position */}
           <div className="flex flex-col gap-2">
@@ -165,10 +198,10 @@ export default function SettingPage() {
         </div>
         {/* Keybinds */}
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl">Keybinds</h2>
+          <h2 className="text-xl font-semibold">Keybinds</h2>
           <div className="divider my-0" />
           <div className="my-2 flex flex-col gap-1">
-            Requires 1 or more Modifiers + 1 Key
+            Requires 1 or more Modifiers and 1 Key
             <div className="collapse collapse-arrow border border-base-300 bg-base-200">
               <input type="checkbox" />
               <div className="collapse-title font-medium">Modifier</div>
@@ -204,6 +237,7 @@ export default function SettingPage() {
                   <li>End</li>
                   <li>Page Up</li>
                   <li>Page Down</li>
+                  <li>{")!@#$%^&*(:;:+=<,_->.?/~`{][|}\"'"}</li>
                 </ul>
               </div>
             </div>
@@ -212,12 +246,26 @@ export default function SettingPage() {
             <h2 className="text-lg">Previous Marker</h2>
             <KeyCaptureButton
               value={settings.keybinds.prev}
-              onKeyCaptured={(captured) =>
+              onKeyCaptured={(captured) => {
+                const error = checkKeybindError(captured);
+                if (error) {
+                  toast.error(error);
+                }
+
+                const check = { ...settings.keybinds };
+                delete check.prev; // Skip checking self
+                if (isDuplicateKeybind(captured, Object.values(check))) {
+                  toast.error("Keybind in use");
+                  return;
+                }
                 updateSettings({
                   ...settings,
-                  keybinds: { ...settings.keybinds, prev: captured },
-                })
-              }
+                  keybinds: {
+                    ...settings.keybinds,
+                    prev: captured,
+                  },
+                });
+              }}
             />
           </div>
           <div className="divider h-1 my-0" />
@@ -225,12 +273,26 @@ export default function SettingPage() {
             <h2 className="text-lg">Next Marker</h2>
             <KeyCaptureButton
               value={settings.keybinds.next}
-              onKeyCaptured={(captured) =>
+              onKeyCaptured={(captured) => {
+                const error = checkKeybindError(captured);
+                if (error) {
+                  toast.error(error);
+                }
+
+                const check = { ...settings.keybinds };
+                delete check.next; // Skip checking self
+                if (isDuplicateKeybind(captured, Object.values(check))) {
+                  toast.error("Keybind in use");
+                  return;
+                }
                 updateSettings({
                   ...settings,
-                  keybinds: { ...settings.keybinds, next: captured },
-                })
-              }
+                  keybinds: {
+                    ...settings.keybinds,
+                    next: captured,
+                  },
+                });
+              }}
             />
           </div>
           <div className="divider h-1 my-0" />
@@ -238,12 +300,26 @@ export default function SettingPage() {
             <h2 className="text-lg">Previous Teleporter</h2>
             <KeyCaptureButton
               value={settings.keybinds.prevTp}
-              onKeyCaptured={(captured) =>
+              onKeyCaptured={(captured) => {
+                const error = checkKeybindError(captured);
+                if (error) {
+                  toast.error(error);
+                }
+
+                const check = { ...settings.keybinds };
+                delete check.prevTp; // Skip checking self
+                if (isDuplicateKeybind(captured, Object.values(check))) {
+                  toast.error("Keybind in use");
+                  return;
+                }
                 updateSettings({
                   ...settings,
-                  keybinds: { ...settings.keybinds, prevTp: captured },
-                })
-              }
+                  keybinds: {
+                    ...settings.keybinds,
+                    prevTp: captured,
+                  },
+                });
+              }}
             />
           </div>
           <div className="divider h-1 my-0" />
@@ -251,12 +327,26 @@ export default function SettingPage() {
             <h2 className="text-lg">Next Teleporter</h2>
             <KeyCaptureButton
               value={settings.keybinds.nextTp}
-              onKeyCaptured={(captured) =>
+              onKeyCaptured={(captured) => {
+                const error = checkKeybindError(captured);
+                if (error) {
+                  toast.error(error);
+                }
+
+                const check = { ...settings.keybinds };
+                delete check.nextTp; // Skip checking self
+                if (isDuplicateKeybind(captured, Object.values(check))) {
+                  toast.error("Keybind in use");
+                  return;
+                }
                 updateSettings({
                   ...settings,
-                  keybinds: { ...settings.keybinds, nextTp: captured },
-                })
-              }
+                  keybinds: {
+                    ...settings.keybinds,
+                    nextTp: captured,
+                  },
+                });
+              }}
             />
           </div>
         </div>

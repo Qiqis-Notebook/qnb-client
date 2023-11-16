@@ -1,35 +1,35 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 
+// Types
+import { KeyBinds } from "@Types/AppSettings";
+
 // Utils
 import translateKey from "@Utils/translateKey";
 import isAccelerator from "electron-is-accelerator";
 import { toast } from "react-toastify";
 
 // Type
-interface Keys {
-  code: string;
+interface Key {
+  code?: string;
+  key?: string;
   accelerator: string;
-  modifier: boolean;
 }
 
 export default function KeyCaptureButton({
   value,
   onKeyCaptured,
 }: {
-  value: string;
-  onKeyCaptured(captured: string): void;
+  value: KeyBinds;
+  onKeyCaptured(captured: KeyBinds): void;
 }) {
   const [capturing, setCapturing] = useState(false);
-  const [keysPressed, setKeysPressed] = useState<Keys[]>([]);
-  const keysPressedRef = useRef<Keys[]>();
-  keysPressedRef.current = keysPressed;
+  const [keyPressed, setKeyPressed] = useState<Key | null>(null);
+  const keyPressedRef = useRef<Key>();
+  keyPressedRef.current = keyPressed;
 
-  const accelerator = useMemo(
-    () => keysPressed.map((item) => item.accelerator).join("+"),
-    [keysPressed]
-  );
-  const acceleratorRef = useRef<string>();
-  acceleratorRef.current = accelerator;
+  const { ctrl, shift, alt, key } = value;
+  const valueRef = useRef<KeyBinds>();
+  valueRef.current = value;
 
   useEffect(() => {
     if (!capturing) return;
@@ -37,8 +37,8 @@ export default function KeyCaptureButton({
     const handleKeyDown = (event: KeyboardEvent) => {
       // Exit capture
       if (event.code === "Escape") {
-        // Clear the keys array
-        setKeysPressed([]);
+        // Clear the key
+        setKeyPressed(null);
 
         // Stop capture
         setCapturing(false);
@@ -46,39 +46,24 @@ export default function KeyCaptureButton({
 
       const translated = translateKey(event);
       if (!translated) return;
-
-      if (
-        !keysPressedRef.current.find((item) => item.code === translated.code)
-      ) {
-        // console.table(translated);
-        // console.log(event.code, translateKey(event));
-        setKeysPressed((prevKeys) => [...prevKeys, translated]);
-      }
+      setKeyPressed(translated);
     };
 
     const handleKeyUp = () => {
-      // Clear the keys array
-      setKeysPressed([]);
+      if (!keyPressedRef.current) return;
+      // Return if valid
+      if (isAccelerator(keyPressedRef.current.accelerator)) {
+        onKeyCaptured({
+          ...valueRef.current,
+          key: keyPressedRef.current.accelerator,
+        });
+      } else {
+        setKeyPressed(null);
+        toast.error("Invalid key");
+      }
 
       // Stop capture
       setCapturing(false);
-
-      // Return if valid
-      const modifierCount = keysPressedRef.current.filter(
-        (item) => item.modifier === true
-      ).length;
-      const keyCount = keysPressedRef.current.filter(
-        (item) => item.modifier === false
-      ).length;
-      if (
-        modifierCount >= 1 &&
-        keyCount === 1 &&
-        isAccelerator(acceleratorRef.current)
-      ) {
-        onKeyCaptured(acceleratorRef.current);
-      } else {
-        toast.error("Invalid key combination");
-      }
     };
 
     // Add event listeners when the component mounts
@@ -95,16 +80,36 @@ export default function KeyCaptureButton({
   }, [capturing]);
 
   return (
-    <button
-      className="btn w-64"
-      onClick={() => setCapturing(true)}
-      disabled={capturing}
+    <div
+      className={`flex gap-1 p-2 rounded-md ${
+        !ctrl && !shift && !alt && "bg-red-500/50"
+      }`}
     >
-      {capturing
-        ? keysPressed.length > 0
-          ? accelerator
-          : "Esc to Cancel"
-        : value || "Set keybinds"}
-    </button>
+      <button
+        className={`btn btn-sm ${ctrl ? "btn-primary" : "btn-ghost"} w-24`}
+        onClick={() => onKeyCaptured({ ...value, ctrl: !ctrl })}
+      >
+        Ctrl
+      </button>
+      <button
+        className={`btn btn-sm ${shift ? "btn-primary" : "btn-ghost"} w-24`}
+        onClick={() => onKeyCaptured({ ...value, shift: !shift })}
+      >
+        Shift
+      </button>
+      <button
+        className={`btn btn-sm ${alt ? "btn-primary" : "btn-ghost"} w-24`}
+        onClick={() => onKeyCaptured({ ...value, alt: !alt })}
+      >
+        Alt
+      </button>
+      <button
+        className="btn btn-sm w-48"
+        onClick={() => setCapturing(true)}
+        disabled={capturing}
+      >
+        {capturing ? "Set key/Esc to cancel" : value.key || "Set keybind"}
+      </button>
+    </div>
   );
 }

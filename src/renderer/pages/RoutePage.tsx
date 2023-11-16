@@ -3,6 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 
 // Config
 import { MAX_RECENT } from "@Config/limits";
+import { BASE_URL } from "@Config/constants";
+
+// Context
+import { useSettings } from "@Context/SettingsContext";
 
 // Util
 import { toast } from "react-toastify";
@@ -13,7 +17,7 @@ import Logo from "@Assets/qiqiLogo.png";
 import { ArrowLeftIcon, CheckBadgeIcon } from "@heroicons/react/24/outline";
 
 // Types
-import { RouteDetail, RouteObject, RouteResponse } from "@Types/Routes";
+import { RouteDetail, RouteObject } from "@Types/Routes";
 
 // Component
 import Linkify from "linkify-react";
@@ -22,12 +26,14 @@ import RouteAuthor from "@Components/RouteAuthor";
 import AvatarList from "@Components/AvatarList";
 import Favorite from "@Components/Favorite";
 import Divider from "@Components/Divider";
-import { BASE_URL } from "@Config/constants";
 import Timer from "@Components/Timer";
 
 export default function RoutePage() {
   let { rid } = useParams();
   const navigate = useNavigate();
+
+  const { settings } = useSettings();
+  const { autoStart } = settings.routeWindow;
 
   // Component id
   const id = useId();
@@ -46,8 +52,7 @@ export default function RoutePage() {
   };
   const handleOpen = () => {
     window.electron.ipcRenderer.openWindow(
-      `${BASE_URL}/embed/route/${data._id}`,
-      true // User setting
+      `${BASE_URL}/embed/route/${data._id}`
     );
     setLaunched(true);
     setStartTimer(true);
@@ -139,7 +144,9 @@ export default function RoutePage() {
     addToRecent(data);
 
     // Launch window
-    handleOpen();
+    if (autoStart) {
+      handleOpen();
+    }
   }, [data]);
 
   const debounce = (func: () => void, delay: number) => {
