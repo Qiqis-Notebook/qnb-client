@@ -72,6 +72,10 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+// App updater
+import { updateElectronApp } from "update-electron-app";
+updateElectronApp();
+
 // Fetch data from any URL and send it to the renderer process
 ipcMain.handle("get-data", async (event, { url, requestId }) => {
   try {

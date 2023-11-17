@@ -64,6 +64,18 @@ const config: ForgeConfig = {
       },
     }),
   ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "Kennie-L",
+          name: "qnb-client",
+        },
+        prerelease: true,
+      },
+    },
+  ],
 };
 
 export default config;
