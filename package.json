@@ -35,6 +35,7 @@
     "autoprefixer": "^10.4.16",
     "css-loader": "^6.8.1",
     "daisyui": "^4.0.7",
+    "dotenv": "^16.3.1",
     "electron": "27.0.4",
     "eslint": "^8.53.0",
     "eslint-plugin-import": "^2.29.0",

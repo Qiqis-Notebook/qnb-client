@@ -177,7 +177,7 @@ export default function RoutePage() {
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
           {/* Timer */}
-          <Timer start={startTimer} />
+          {data && <Timer start={startTimer} />}
         </div>
         {loading ? (
           <div className="w-full grow justify-center items-center flex">
@@ -252,7 +252,9 @@ export default function RoutePage() {
                 </div>
               </div>
             ) : (
-              <div>Error loading route</div>
+              <div className="w-full flex grow justify-center items-center">
+                Error loading route
+              </div>
             )}
           </Fragment>
         )}

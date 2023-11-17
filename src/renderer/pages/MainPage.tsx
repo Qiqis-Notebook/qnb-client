@@ -34,7 +34,17 @@ export default function MainPage() {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    navigate(`/routes/search?q=${encodeURI(query)}`);
+
+    const regex =
+      /^(?:https:\/\/(www\.)?qiqis-notebook\.com\/route\/)?([0-9a-fA-F]{24})$/;
+    const match = query.match(regex);
+
+    // If it's a route id, launch the route
+    if (match) {
+      navigate(`/route/${match[2]}`);
+    } else {
+      navigate(`/routes/search?q=${encodeURI(query)}`);
+    }
   };
 
   useEffect(() => {

@@ -10,6 +10,8 @@ import { rendererConfig } from "./webpack.renderer.config";
 
 import { DEV_URL, PROD_URL } from "./config/constants";
 
+import "dotenv/config";
+
 const configParams = {
   id: "QiqisNotebook",
   name: "Qiqi's Notebook",
@@ -69,10 +71,11 @@ const config: ForgeConfig = {
       name: "@electron-forge/publisher-github",
       config: {
         repository: {
-          owner: "Kennie-L",
+          owner: "Qiqis-Notebook",
           name: "qnb-client",
         },
-        prerelease: true,
+        draft: true,
+        authToken: process.env.GITHUB_TOKEN,
       },
     },
   ],
