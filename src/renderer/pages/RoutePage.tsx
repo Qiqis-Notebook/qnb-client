@@ -57,6 +57,8 @@ export default function RoutePage() {
     );
     setLaunched(true);
     setStartTimer(true);
+    // Add to recent
+    addToRecent(data);
   };
   const handleClose = () => {
     window.electron.ipcRenderer.closeWindow();
@@ -140,9 +142,6 @@ export default function RoutePage() {
   // Action on data
   useEffect(() => {
     if (!data) return;
-
-    // Add to recent
-    addToRecent(data);
 
     // Launch window
     if (autoStart) {

@@ -1,10 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @font-face {
   font-family: "Merriweather Sans";
   src: url("./fonts/MerriweatherSans-VariableFont_wght.ttf");
 }
 * {
   font-family: "Merriweather Sans";
+}
+
+/* unvisited link */
+pre > a:link {
+  color: cornflowerblue;
+}
+
+/* visited link */
+pre > a:visited {
+  color: mediumpurple;
 }
