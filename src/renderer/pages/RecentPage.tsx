@@ -34,30 +34,30 @@ export default function FavoritePage() {
   }
 
   return (
-    <StyledScrollbar>
-      {displayRecent &&
-        (displayRecent.length > 0 ? (
-          <div className="flex flex-col gap-2">
-            {displayRecent.map((item, idx) => (
-              <FullCard route={item} key={`fav-${idx}`} showBadge>
-                <button
-                  className="btn-square btn-sm btn h-10 w-10 btn-ghost"
-                  title="Delete from Recent"
-                  onClick={() => {
-                    removeRecent(item._id);
-                  }}
-                  disabled={loading}
-                >
-                  <TrashIcon className="h-6 w-6" />
-                </button>
-              </FullCard>
-            ))}
-          </div>
-        ) : (
-          <div className="w-full rounded-lg bg-base-200 p-2 text-center">
-            <p>No routes</p>
-          </div>
-        ))}
-    </StyledScrollbar>
+    displayRecent &&
+    (displayRecent.length > 0 ? (
+      <StyledScrollbar>
+        <div className="flex flex-col gap-2">
+          {displayRecent.map((item, idx) => (
+            <FullCard route={item} key={`fav-${idx}`} showBadge>
+              <button
+                className="btn-square btn-sm btn h-10 w-10 btn-ghost"
+                title="Delete from Recent"
+                onClick={() => {
+                  removeRecent(item._id);
+                }}
+                disabled={loading}
+              >
+                <TrashIcon className="h-6 w-6" />
+              </button>
+            </FullCard>
+          ))}
+        </div>
+      </StyledScrollbar>
+    ) : (
+      <div className="w-full rounded-lg bg-base-200 p-2 text-center">
+        <p>No routes</p>
+      </div>
+    ))
   );
 }

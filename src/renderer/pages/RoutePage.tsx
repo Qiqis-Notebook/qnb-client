@@ -210,42 +210,40 @@ export default function RoutePage() {
                 </div>
                 <Divider />
                 {/* Description */}
-                <div className="h-40">
-                  <StyledScrollbar>
-                    <div className="whitespace-pre-line break-words leading-normal w-full">
-                      {data.description ? (
-                        <Linkify
-                          as="pre"
-                          options={{
-                            defaultProtocol: "https",
-                            target: "_blank",
-                          }}
-                          style={{
-                            fontFamily: "inherit",
-                            whiteSpace: "pre-wrap",
-                            overflowWrap: "break-word",
-                          }}
-                        >
-                          {data.description}
-                        </Linkify>
-                      ) : (
-                        "No description"
-                      )}
-                    </div>
-                  </StyledScrollbar>
-                </div>
+                <StyledScrollbar>
+                  <div className="h-40 whitespace-pre-line break-words leading-normal w-full">
+                    {data.description ? (
+                      <Linkify
+                        as="pre"
+                        options={{
+                          defaultProtocol: "https",
+                          target: "_blank",
+                        }}
+                        style={{
+                          fontFamily: "inherit",
+                          whiteSpace: "pre-wrap",
+                          overflowWrap: "break-word",
+                        }}
+                      >
+                        {data.description}
+                      </Linkify>
+                    ) : (
+                      "No description"
+                    )}
+                  </div>
+                </StyledScrollbar>
                 {/* Actions */}
-                <div className="flex gap-2 w-full">
+                <div className="flex flex-row gap-2 w-full">
                   <Favorite routeDetail={data} />
                   <button
-                    className="btn w-1/2"
+                    className="btn grow"
                     disabled={!launched}
                     onClick={handleRestart}
                   >
                     Restart
                   </button>
                   <button
-                    className={`btn w-1/2 ${
+                    className={`btn grow ${
                       launched ? "btn-error" : "btn-success"
                     }`}
                     onClick={() => (launched ? handleClose() : handleOpen())}
