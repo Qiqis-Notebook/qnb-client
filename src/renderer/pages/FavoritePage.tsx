@@ -9,12 +9,12 @@ import { MAX_ROUTE_DISPLAY, ROUTES_PER_PAGE } from "@Config/limits";
 // Utils
 import { useLiveQuery } from "dexie-react-hooks";
 import { favoritesTable } from "../db";
+import { toast } from "react-toastify";
 
 // Components
 import { useQuery } from "@Layouts/RouteLayout";
 import FullCard from "@Components/cards/FullCard";
 import Pagination from "@Components/Pagination";
-import { toast } from "react-toastify";
 
 export default function FavoritePage() {
   const { query, page } = useQuery();
@@ -73,12 +73,7 @@ export default function FavoritePage() {
                 pageNumber * ROUTES_PER_PAGE
               )
               .map((item, idx) => (
-                <FullCard
-                  route={item}
-                  key={`fav-${idx}`}
-                  pinned={item.pinned}
-                  showBadge
-                >
+                <FullCard route={item} key={`fav-${idx}`} showBadge>
                   <button
                     className="btn-square btn-sm btn h-10 w-10 btn-ghost"
                     title="Delete from Recent"

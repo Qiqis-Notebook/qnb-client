@@ -117,19 +117,19 @@ export default function MainPage() {
         <div className="w-full text-center">Featured Routes</div>
         <Divider />
         {featured === null ? (
-          <div className="grid items-start gap-3 grid-cols-3 h-60">
+          <div className="grid items-start gap-3 grid-cols-3">
             <FullCardSkeleton />
             <FullCardSkeleton />
             <FullCardSkeleton />
           </div>
         ) : featured.length > 0 ? (
-          <div className="grid items-start gap-3 grid-cols-3 h-60">
+          <div className="grid items-start gap-3 grid-cols-3">
             {featured.map((item, idx) => (
               <FullCard route={item} key={`fr-${idx}`} />
             ))}
           </div>
         ) : (
-          <div className="rounded-lg bg-base-200 h-60 flex items-center justify-center">
+          <div className="rounded-lg bg-base-200 flex items-center justify-center h-[260px]">
             No Data
           </div>
         )}

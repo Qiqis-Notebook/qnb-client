@@ -27,7 +27,7 @@ export default function QuickCard({
   const currentDate = new Date();
   return (
     <button
-      className={`btn w-full rounded-lg bg-base-200 p-2 flex flex-row gap-1 justify-center items-left ${
+      className={`btn w-full rounded-lg bg-base-200 p-2 flex flex-row flex-nowrap justify-center items-left ${
         route.featured &&
         !settings.mainWindow.reducedColor &&
         "border border-primary"
@@ -38,11 +38,14 @@ export default function QuickCard({
       {route.verified && (
         <CheckBadgeIcon className="h-6 w-6 text-green-400" title="Verified" />
       )}
-      <div className="truncate grow text-left" title={route.title}>
+      <div className="grow truncate text-left" title={route.title}>
         {route.title}
       </div>
       {recent && (
-        <div title={new Date(route.added).toLocaleString()}>
+        <div
+          title={new Date(route.added).toLocaleString()}
+          className="shrink-0"
+        >
           {isSameDay(addedDate, currentDate)
             ? addedDate.toLocaleTimeString()
             : addedDate.toLocaleDateString()}

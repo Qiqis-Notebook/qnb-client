@@ -139,6 +139,8 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
     title: "Qiqi's Notebook",
+    backgroundColor: "#191919",
+    show: false,
   });
 
   // and load the index.html of the app.
@@ -163,6 +165,11 @@ const createWindow = (): void => {
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: "deny" };
+  });
+
+  // Show once ready
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
   });
 };
 

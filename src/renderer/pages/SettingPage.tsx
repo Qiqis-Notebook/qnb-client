@@ -35,7 +35,7 @@ export default function SettingPage() {
             <h2 className="text-lg">Minimize</h2>
             <div className="flex gap-1 justify-between items-center">
               <p>
-                Automatically minimize then main window when route window
+                Automatically minimize the main window when route window
                 launches.
               </p>
               <input

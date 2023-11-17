@@ -1,6 +1,6 @@
 {
   "name": "qnb-client",
-  "productName": "qnb-client",
+  "productName": "Qiqi's Notebook",
   "version": "1.0.0",
   "description": "A desktop client for Qiqi's Notebook",
   "main": ".webpack/main",
@@ -14,10 +14,10 @@
   "private": true,
   "keywords": [],
   "license": "MIT",
+  "author": "Qiqi's Notebook",
   "devDependencies": {
     "@electron-forge/cli": "^6.4.2",
-    "@electron-forge/maker-deb": "^6.4.2",
-    "@electron-forge/maker-rpm": "^6.4.2",
+    "@electron-forge/maker-dmg": "^7.0.0",
     "@electron-forge/maker-squirrel": "^6.4.2",
     "@electron-forge/maker-zip": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",

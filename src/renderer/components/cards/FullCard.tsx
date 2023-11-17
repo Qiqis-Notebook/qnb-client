@@ -33,10 +33,10 @@ export default function FullCard({
 
   return (
     <div
-      className={`w-full h-full rounded-lg bg-base-200 p-2 flex gap-1 flex-col ${
-        route.featured &&
-        !settings.mainWindow.reducedColor &&
-        "border border-primary"
+      className={`w-full h-full rounded-lg bg-base-200 p-2 flex gap-1 flex-col border ${
+        route.featured && !settings.mainWindow.reducedColor
+          ? "border-primary"
+          : "border-transparent"
       }`}
     >
       {/* Header */}
@@ -60,7 +60,7 @@ export default function FullCard({
       <RouteAuthor route={route} />
       <Divider />
       {/* Content */}
-      <div className="max-h-[120px] grow overflow-y-auto whitespace-pre-line break-words leading-normal">
+      <div className="h-[100px] max-h-[100px] text-sm grow overflow-y-auto whitespace-pre-line break-words leading-normal">
         {route.description ? (
           <Linkify
             as="pre"

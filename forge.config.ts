@@ -1,8 +1,7 @@
 import type { ForgeConfig } from "@electron-forge/shared-types";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
-import { MakerDeb } from "@electron-forge/maker-deb";
-import { MakerRpm } from "@electron-forge/maker-rpm";
+import { MakerDMG } from "@electron-forge/maker-dmg";
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
 import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 
@@ -11,16 +10,39 @@ import { rendererConfig } from "./webpack.renderer.config";
 
 import { DEV_URL, PROD_URL } from "./config/constants";
 
+const configParams = {
+  id: "QiqisNotebook",
+  name: "Qiqi's Notebook",
+  installerName: "Qiqi's Notebook Installer",
+  iconUrl: "https://www.qiqis-notebook.com/favicon.ico",
+  iconRelative: "./assets/favicon.ico",
+  homepage: "https://qiqis-notebook.com",
+};
+
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    icon: "./assets/favicon",
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerZIP({}, ["darwin"]),
-    new MakerRpm({}),
-    new MakerDeb({}),
+    new MakerSquirrel({
+      // name: configParams.id,
+      // title: configParams.name,
+      // setupExe: configParams.installerName,
+      // setupMsi: configParams.installerName,
+      iconUrl: configParams.iconUrl,
+      setupIcon: configParams.iconRelative,
+    }),
+    new MakerDMG(
+      {
+        name: configParams.name,
+        icon: configParams.iconRelative,
+        overwrite: true,
+      },
+      []
+    ),
+    new MakerZIP({}, []),
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
