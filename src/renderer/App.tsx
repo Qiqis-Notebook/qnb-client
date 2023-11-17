@@ -4,6 +4,7 @@ import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 // CSS
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
+import "overlayscrollbars/overlayscrollbars.css";
 
 // Context
 import { SettingsProvider } from "./context/SettingsContext";

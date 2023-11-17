@@ -12,6 +12,7 @@ import { useQuery } from "@Layouts/RouteLayout";
 import FullCard from "@Components/cards/FullCard";
 import Pagination from "@Components/Pagination";
 import Spinner from "@Components/Spinner";
+import StyledScrollbar from "@Components/StyledScrollbar";
 
 export default function SearchPage() {
   const navigate = useNavigate();
@@ -72,19 +73,21 @@ export default function SearchPage() {
 
   return data ? (
     data.data.routes.length > 0 ? (
-      <div className="h-screen overflow-y-auto flex flex-col gap-2">
-        {data.data.routes.map((item, idx) => (
-          <FullCard route={item} key={`fav-${idx}`} showBadge />
-        ))}
-        <Pagination
-          totalPages={data.data.totalPages}
-          currentPage={pageNumber}
-          onPageChange={(pageNum) => {
-            setPage(pageNum);
-            setData(null);
-          }}
-        />
-      </div>
+      <StyledScrollbar>
+        <div className="flex flex-col gap-2">
+          {data.data.routes.map((item, idx) => (
+            <FullCard route={item} key={`fav-${idx}`} showBadge />
+          ))}
+          <Pagination
+            totalPages={data.data.totalPages}
+            currentPage={pageNumber}
+            onPageChange={(pageNum) => {
+              setPage(pageNum);
+              setData(null);
+            }}
+          />
+        </div>
+      </StyledScrollbar>
     ) : (
       <div className="w-full rounded-lg bg-base-200 p-2 text-center">
         <p>No routes</p>

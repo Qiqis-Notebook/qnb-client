@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { useQuery } from "@Layouts/RouteLayout";
 import FullCard from "@Components/cards/FullCard";
 import Pagination from "@Components/Pagination";
+import StyledScrollbar from "@Components/StyledScrollbar";
 
 export default function FavoritePage() {
   const { query, page } = useQuery();
@@ -63,7 +64,7 @@ export default function FavoritePage() {
     await favoritesTable.delete(_id).finally(() => setLoading(false));
   }
   return (
-    <div className="h-screen overflow-y-auto">
+    <StyledScrollbar>
       {displayFavorites &&
         (displayFavorites.length > 0 ? (
           <div className="flex flex-col gap-2">
@@ -113,6 +114,6 @@ export default function FavoritePage() {
             <p>No routes</p>
           </div>
         ))}
-    </div>
+    </StyledScrollbar>
   );
 }

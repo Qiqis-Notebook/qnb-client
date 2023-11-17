@@ -10,6 +10,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 // Components
 import { useQuery } from "@Layouts/RouteLayout";
 import FullCard from "@Components/cards/FullCard";
+import StyledScrollbar from "@Components/StyledScrollbar";
 
 export default function FavoritePage() {
   const { query } = useQuery();
@@ -33,7 +34,7 @@ export default function FavoritePage() {
   }
 
   return (
-    <div className="h-screen overflow-y-auto">
+    <StyledScrollbar>
       {displayRecent &&
         (displayRecent.length > 0 ? (
           <div className="flex flex-col gap-2">
@@ -57,6 +58,6 @@ export default function FavoritePage() {
             <p>No routes</p>
           </div>
         ))}
-    </div>
+    </StyledScrollbar>
   );
 }

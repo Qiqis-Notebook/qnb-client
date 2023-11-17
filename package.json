@@ -56,6 +56,8 @@
     "linkifyjs": "^4.1.2",
     "lodash": "^4.17.21",
     "next-themes": "^0.2.1",
+    "overlayscrollbars": "^2.4.4",
+    "overlayscrollbars-react": "^0.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",

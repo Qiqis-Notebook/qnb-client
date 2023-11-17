@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import RouteAuthor from "@Components/RouteAuthor";
 import Divider from "@Components/Divider";
 import AvatarList from "@Components/AvatarList";
+import StyledScrollbar from "@Components/StyledScrollbar";
 
 export default function FullCard({
   route,
@@ -60,23 +61,25 @@ export default function FullCard({
       <RouteAuthor route={route} />
       <Divider />
       {/* Content */}
-      <div className="h-[100px] max-h-[100px] text-sm grow overflow-y-auto whitespace-pre-line break-words leading-normal">
-        {route.description ? (
-          <Linkify
-            as="pre"
-            options={{ defaultProtocol: "https", target: "_blank" }}
-            style={{
-              fontFamily: "inherit",
-              whiteSpace: "pre-wrap",
-              overflowWrap: "break-word",
-            }}
-          >
-            {route.description}
-          </Linkify>
-        ) : (
-          "No description"
-        )}
-      </div>
+      <StyledScrollbar>
+        <div className="h-[100px] max-h-[100px] text-sm grow whitespace-pre-line break-words leading-normal">
+          {route.description ? (
+            <Linkify
+              as="pre"
+              options={{ defaultProtocol: "https", target: "_blank" }}
+              style={{
+                fontFamily: "inherit",
+                whiteSpace: "pre-wrap",
+                overflowWrap: "break-word",
+              }}
+            >
+              {route.description}
+            </Linkify>
+          ) : (
+            "No description"
+          )}
+        </div>
+      </StyledScrollbar>
       <Divider />
       {/* Footer */}
       <div className="flex items-center justify-between flex-row">

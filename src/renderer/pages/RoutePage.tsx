@@ -27,6 +27,7 @@ import AvatarList from "@Components/AvatarList";
 import Favorite from "@Components/Favorite";
 import Divider from "@Components/Divider";
 import Timer from "@Components/Timer";
+import StyledScrollbar from "@Components/StyledScrollbar";
 
 export default function RoutePage() {
   let { rid } = useParams();
@@ -209,22 +210,29 @@ export default function RoutePage() {
                 </div>
                 <Divider />
                 {/* Description */}
-                <div className="h-40 overflow-y-auto whitespace-pre-line break-words leading-normal w-full">
-                  {data.description ? (
-                    <Linkify
-                      as="pre"
-                      options={{ defaultProtocol: "https", target: "_blank" }}
-                      style={{
-                        fontFamily: "inherit",
-                        whiteSpace: "pre-wrap",
-                        overflowWrap: "break-word",
-                      }}
-                    >
-                      {data.description}
-                    </Linkify>
-                  ) : (
-                    "No description"
-                  )}
+                <div className="h-40">
+                  <StyledScrollbar>
+                    <div className="whitespace-pre-line break-words leading-normal w-full">
+                      {data.description ? (
+                        <Linkify
+                          as="pre"
+                          options={{
+                            defaultProtocol: "https",
+                            target: "_blank",
+                          }}
+                          style={{
+                            fontFamily: "inherit",
+                            whiteSpace: "pre-wrap",
+                            overflowWrap: "break-word",
+                          }}
+                        >
+                          {data.description}
+                        </Linkify>
+                      ) : (
+                        "No description"
+                      )}
+                    </div>
+                  </StyledScrollbar>
                 </div>
                 {/* Actions */}
                 <div className="flex gap-2 w-full">

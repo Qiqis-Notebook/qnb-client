@@ -1,4 +1,4 @@
-// Hoocks
+// Hooks
 import { useTheme } from "next-themes";
 
 // Assets
