@@ -1,12 +1,10 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // Types
 import { KeyBinds } from "@Types/AppSettings";
 
 // Utils
 import translateKey from "@Utils/translateKey";
-import isAccelerator from "electron-is-accelerator";
-import { toast } from "react-toastify";
 
 // Type
 interface Key {
@@ -27,13 +25,11 @@ export default function KeyCaptureButton({
   const keyPressedRef = useRef<Key>();
   keyPressedRef.current = keyPressed;
 
-  const { ctrl, shift, alt, key } = value;
+  const { ctrl, shift, alt, key, enable } = value;
   const valueRef = useRef<KeyBinds>();
   valueRef.current = value;
 
   useEffect(() => {
-    if (!capturing) return;
-
     const handleKeyDown = (event: KeyboardEvent) => {
       // Exit capture
       if (event.code === "Escape") {
@@ -51,20 +47,23 @@ export default function KeyCaptureButton({
 
     const handleKeyUp = () => {
       if (!keyPressedRef.current) return;
-      // Return if valid
-      if (isAccelerator(keyPressedRef.current.accelerator)) {
-        onKeyCaptured({
-          ...valueRef.current,
-          key: keyPressedRef.current.accelerator,
-        });
-      } else {
-        setKeyPressed(null);
-        toast.error("Invalid key");
-      }
+
+      onKeyCaptured({
+        ...valueRef.current,
+        key: keyPressedRef.current.accelerator,
+      });
 
       // Stop capture
       setCapturing(false);
     };
+
+    if (!capturing) return;
+    if (!enable) {
+      setCapturing(false);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      return;
+    }
 
     // Add event listeners when the component mounts
     window.addEventListener("keydown", handleKeyDown);
@@ -77,27 +76,50 @@ export default function KeyCaptureButton({
         window.removeEventListener("keyup", handleKeyUp);
       }
     };
-  }, [capturing]);
+  }, [capturing, enable]);
 
   return (
     <div
-      className={`flex gap-1 p-2 rounded-md ${
-        !ctrl && !shift && !alt && "bg-red-500/50"
+      className={`flex gap-1 p-2 rounded-md items-center ${
+        !ctrl && !shift && !alt && key === "" && enable && "bg-red-500/50"
       }`}
     >
+      <input
+        type="checkbox"
+        className="toggle"
+        title={value.enable ? "Disable" : "Enable"}
+        checked={value.enable}
+        onChange={(e) => {
+          if (e.target.checked) {
+            onKeyCaptured({ ...value, enable: e.target.checked });
+          } else {
+            // Clear keybinds if disable
+            onKeyCaptured({
+              shift: false,
+              ctrl: false,
+              alt: false,
+              key: "",
+              enable: e.target.checked,
+            });
+          }
+        }}
+      />
       <button
+        disabled={!value.enable}
         className={`btn btn-sm ${ctrl ? "btn-primary" : "btn-ghost"} w-24`}
         onClick={() => onKeyCaptured({ ...value, ctrl: !ctrl })}
       >
         Ctrl
       </button>
       <button
+        disabled={!value.enable}
         className={`btn btn-sm ${shift ? "btn-primary" : "btn-ghost"} w-24`}
         onClick={() => onKeyCaptured({ ...value, shift: !shift })}
       >
         Shift
       </button>
       <button
+        disabled={!value.enable}
         className={`btn btn-sm ${alt ? "btn-primary" : "btn-ghost"} w-24`}
         onClick={() => onKeyCaptured({ ...value, alt: !alt })}
       >
@@ -106,7 +128,7 @@ export default function KeyCaptureButton({
       <button
         className="btn btn-sm w-48"
         onClick={() => setCapturing(true)}
-        disabled={capturing}
+        disabled={capturing || !value.enable}
       >
         {capturing ? "Set key/Esc to cancel" : value.key || "Set keybind"}
       </button>

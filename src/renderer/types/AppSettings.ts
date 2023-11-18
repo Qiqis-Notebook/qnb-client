@@ -1,4 +1,5 @@
 export interface KeyBinds {
+  enable: boolean;
   shift: boolean;
   ctrl: boolean;
   alt: boolean;

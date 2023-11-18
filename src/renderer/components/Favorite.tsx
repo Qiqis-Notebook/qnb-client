@@ -33,6 +33,7 @@ export default function Favorite({
   return favorite ? (
     <button
       className="btn btn-square"
+      title="Unfavorite"
       onClick={async () => {
         if (loading) return;
         setLoading(true);
@@ -60,6 +61,7 @@ export default function Favorite({
   ) : (
     <button
       className="btn btn-square"
+      title="Favorite"
       onClick={async () => {
         if (loading) return;
         setLoading(true);
