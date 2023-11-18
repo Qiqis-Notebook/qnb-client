@@ -1,14 +1,14 @@
 # Qiqi's Notebok Desktop Client
 
-<p align="center">
-  <img src="./assets/icon.png" />
-</p>
+<div align="center">
+  <img src="./assets/logo.png" style="width: 256px; height: 256px;" />
+</div>
 
 A dekstop application for [Qiqi's Notebook](https://www.qiqis-notebook.com) to launch routes on an 'always on top' window to see and control the route map while playing Genshin in windowed mode.
 
 The application to supports keyboard shortcuts for navigation on top of your game. All the functionalities works the same as the web version, panning, zooming, etc.
 
-This application is built to use with Genshin in windowed mode.
+This application is built for use with Genshin in windowed mode.
 
 ## Controls
 
