@@ -16,15 +16,15 @@ const configParams = {
   id: "QiqisNotebook",
   name: "Qiqi's Notebook",
   installerName: "Qiqi's Notebook Installer",
-  iconUrl: "https://www.qiqis-notebook.com/favicon.ico",
-  iconRelative: "./assets/favicon.ico",
+  iconUrl: "https://www.qiqis-notebook.com/icon.ico",
+  iconRelative: "./assets/icons/icon.ico",
   homepage: "https://qiqis-notebook.com",
 };
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: "./assets/favicon",
+    icon: "./assets/icons/icon",
   },
   rebuildConfig: {},
   makers: [

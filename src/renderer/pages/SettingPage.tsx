@@ -1,5 +1,5 @@
 // Context
-import { useSettings } from "@Context/SettingsContext";
+import { defaultSettings, useSettings } from "@Context/SettingsContext";
 
 // Components
 import KeyCaptureButton from "@Components/KeyCaptureButton";
@@ -204,16 +204,18 @@ export default function SettingPage() {
             <KeyCaptureButton
               value={settings.keybinds.prev}
               onKeyCaptured={(captured) => {
-                const error = checkKeybindError(captured);
-                if (error) {
-                  toast.error(error);
-                }
+                if (captured.enable && captured.key !== "") {
+                  const error = checkKeybindError(captured);
+                  if (error) {
+                    toast.error(error);
+                  }
 
-                const check = { ...settings.keybinds };
-                delete check.prev; // Skip checking self
-                if (isDuplicateKeybind(captured, Object.values(check))) {
-                  toast.error("Keybind in use");
-                  return;
+                  const check = { ...settings.keybinds };
+                  delete check.prev; // Skip checking self
+                  if (isDuplicateKeybind(captured, Object.values(check))) {
+                    toast.error("Keybind in use");
+                    return;
+                  }
                 }
                 updateSettings({
                   ...settings,
@@ -231,16 +233,18 @@ export default function SettingPage() {
             <KeyCaptureButton
               value={settings.keybinds.next}
               onKeyCaptured={(captured) => {
-                const error = checkKeybindError(captured);
-                if (error) {
-                  toast.error(error);
-                }
+                if (captured.enable && captured.key !== "") {
+                  const error = checkKeybindError(captured);
+                  if (error) {
+                    toast.error(error);
+                  }
 
-                const check = { ...settings.keybinds };
-                delete check.next; // Skip checking self
-                if (isDuplicateKeybind(captured, Object.values(check))) {
-                  toast.error("Keybind in use");
-                  return;
+                  const check = { ...settings.keybinds };
+                  delete check.next; // Skip checking self
+                  if (isDuplicateKeybind(captured, Object.values(check))) {
+                    toast.error("Keybind in use");
+                    return;
+                  }
                 }
                 updateSettings({
                   ...settings,
@@ -258,16 +262,18 @@ export default function SettingPage() {
             <KeyCaptureButton
               value={settings.keybinds.prevTp}
               onKeyCaptured={(captured) => {
-                const error = checkKeybindError(captured);
-                if (error) {
-                  toast.error(error);
-                }
+                if (captured.enable && captured.key !== "") {
+                  const error = checkKeybindError(captured);
+                  if (error) {
+                    toast.error(error);
+                  }
 
-                const check = { ...settings.keybinds };
-                delete check.prevTp; // Skip checking self
-                if (isDuplicateKeybind(captured, Object.values(check))) {
-                  toast.error("Keybind in use");
-                  return;
+                  const check = { ...settings.keybinds };
+                  delete check.prevTp; // Skip checking self
+                  if (isDuplicateKeybind(captured, Object.values(check))) {
+                    toast.error("Keybind in use");
+                    return;
+                  }
                 }
                 updateSettings({
                   ...settings,
@@ -285,16 +291,18 @@ export default function SettingPage() {
             <KeyCaptureButton
               value={settings.keybinds.nextTp}
               onKeyCaptured={(captured) => {
-                const error = checkKeybindError(captured);
-                if (error) {
-                  toast.error(error);
-                }
+                if (captured.enable && captured.key !== "") {
+                  const error = checkKeybindError(captured);
+                  if (error) {
+                    toast.error(error);
+                  }
 
-                const check = { ...settings.keybinds };
-                delete check.nextTp; // Skip checking self
-                if (isDuplicateKeybind(captured, Object.values(check))) {
-                  toast.error("Keybind in use");
-                  return;
+                  const check = { ...settings.keybinds };
+                  delete check.nextTp; // Skip checking self
+                  if (isDuplicateKeybind(captured, Object.values(check))) {
+                    toast.error("Keybind in use");
+                    return;
+                  }
                 }
                 updateSettings({
                   ...settings,
@@ -305,6 +313,24 @@ export default function SettingPage() {
                 });
               }}
             />
+          </div>
+        </div>
+        {/* Reset */}
+        <div className="flex flex-col gap-2">
+          <h2 className="text-xl font-semibold">Reset</h2>
+          <div className="divider my-0" />
+          {/* Auto minimize */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg">Reset settings</h2>
+            <div className="flex gap-1 justify-between items-center">
+              <p>Reset all settings to their default values.</p>
+              <button
+                className="btn btn-error btn-sm w-48"
+                onClick={() => updateSettings(defaultSettings)}
+              >
+                Reset
+              </button>
+            </div>
           </div>
         </div>
       </div>

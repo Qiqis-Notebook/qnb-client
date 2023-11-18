@@ -104,7 +104,7 @@ export default function translateKey(event: KeyboardEvent): {
 
   // Numpad
   // num0 - num9
-  if (code.match(/Numpad[0-9]/)) {
+  if (code.match(/^Numpad[0-9]$/)) {
     return { code, accelerator: `num${code[6]}` };
   }
 

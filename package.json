@@ -1,7 +1,7 @@
 {
   "name": "qnb-client",
   "productName": "Qiqi's Notebook",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A desktop client for Qiqi's Notebook",
   "main": ".webpack/main",
   "scripts": {
@@ -57,7 +57,6 @@
     "classnames": "^2.3.2",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.7",
-    "electron-is-accelerator": "^0.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "linkify-react": "^4.1.2",
     "linkifyjs": "^4.1.2",

@@ -16,14 +16,26 @@ const SettingsContext = createContext<SettingsContextProps | undefined>(
   undefined
 );
 
-const defaultSettings = {
+export const defaultSettings = {
   mainWindow: { minimize: true, reducedColor: false },
   routeWindow: { autoStart: false, opacity: 1 },
   keybinds: {
-    prev: { shift: false, ctrl: false, alt: true, key: "Left" },
-    next: { shift: false, ctrl: false, alt: true, key: "Right" },
-    prevTp: { shift: true, ctrl: false, alt: true, key: "Left" },
-    nextTp: { shift: true, ctrl: false, alt: true, key: "Right" },
+    prev: { enable: true, shift: false, ctrl: false, alt: true, key: "Left" },
+    next: { enable: true, shift: false, ctrl: false, alt: true, key: "Right" },
+    prevTp: {
+      enable: false,
+      shift: false,
+      ctrl: false,
+      alt: false,
+      key: "",
+    },
+    nextTp: {
+      enable: false,
+      shift: false,
+      ctrl: false,
+      alt: false,
+      key: "",
+    },
   },
 };
 

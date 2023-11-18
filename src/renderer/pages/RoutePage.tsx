@@ -14,7 +14,12 @@ import { recentTable } from "../db";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";
-import { ArrowLeftIcon, CheckBadgeIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  CheckBadgeIcon,
+  ClipboardDocumentIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
 
 // Types
 import { RouteDetail, RouteObject } from "@Types/Routes";
@@ -168,6 +173,13 @@ export default function RoutePage() {
     }, 0);
   }, 1000); // Debounce restart event (1 second)
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(
+      `https://qiqis-notebook.com/route/${data._id}`
+    );
+    toast.success("Route link copied");
+  };
+
   return (
     <div className="relative h-full">
       <div className="h-full w-full absolute z-10 p-2 flex flex-col mx-auto">
@@ -234,6 +246,13 @@ export default function RoutePage() {
                 {/* Actions */}
                 <div className="flex flex-row gap-2 w-full">
                   <Favorite routeDetail={data} />
+                  <button
+                    className="btn btn-square"
+                    title="Copy link"
+                    onClick={handleCopy}
+                  >
+                    <ClipboardDocumentIcon className="h-6 w-6" />
+                  </button>
                   <button
                     className="btn grow"
                     disabled={!launched}
