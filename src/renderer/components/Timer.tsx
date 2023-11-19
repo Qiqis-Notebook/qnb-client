@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Timer({ start = false }: { start: boolean }) {
   const [currentTimer, setCurrentTimer] = useState({

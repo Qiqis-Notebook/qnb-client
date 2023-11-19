@@ -18,7 +18,6 @@ import {
   ArrowLeftIcon,
   CheckBadgeIcon,
   ClipboardDocumentIcon,
-  ShareIcon,
 } from "@heroicons/react/24/outline";
 
 // Types
