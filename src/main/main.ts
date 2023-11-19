@@ -136,6 +136,7 @@ const createWindow = (): void => {
     icon: nativeImage.createFromPath(iconPath),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      backgroundThrottling: false, // Prevent timer suspension
     },
     title: "Qiqi's Notebook",
     backgroundColor: "#191919",
