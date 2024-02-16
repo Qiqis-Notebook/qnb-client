@@ -53,6 +53,7 @@ export default function RoutePage() {
 
   // Functions
   const handleBack = () => {
+    window.electron.ipcRenderer.closeWindow();
     navigate(-1);
   };
   const handleOpen = () => {

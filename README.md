@@ -4,11 +4,11 @@
   <img src="./assets/logo.png" style="width: 256px; height: 256px;" />
 </div>
 
-A dekstop application for [Qiqi's Notebook](https://www.qiqis-notebook.com) to launch routes on an 'always on top' window to see and control the route map while playing Genshin in windowed mode.
+A dekstop application for [Qiqi's Notebook](https://www.qiqis-notebook.com) to launch routes on an 'always on top' window to see and control the route map while playing Genshin.
 
-The application to supports keyboard shortcuts for navigation on top of your game. All the functionalities works the same as the web version, panning, zooming, etc.
+The application supports keyboard shortcuts for navigation. All the functionalities works the same as the web version, panning, zooming, etc.
 
-This application is built for use with Genshin in windowed mode.
+This application is designed to be use with Genshin in windowed mode.
 
 ## Controls
 
@@ -18,10 +18,8 @@ Keybinds for route navigation can be modified in the settings menu.
 
 - Alt + Left Arrow: Previous marker
 - Alt + Right Arrow: Next marker
-- Alt + Shift + Left Arrow: Skip to previous teleporter marker
-- Alt + Shift + Right Arrow: Skip to next teleporter marker
 
-Hint: Bind the controls onto your mouse/macro keys
+> Hint: Bind the controls onto your mouse/macro keys for quick access
 
 ## App
 
@@ -66,7 +64,9 @@ npm i
 npm start
 ```
 
-> There is no mock API server so all fetch requests to the local Qiqi's Notebook API endpoint will fail. You can mock the API response based on the type definition but do not use production API (from qiqis-notebook.com) to develop as it can result in Cloudflare Ban.
+> There is no mock API server so all fetch requests to the local Qiqi's Notebook API endpoint will fail. You can mock the API response based on the type definition but limit the use of production API (from qiqis-notebook.com) to develop as it can result in Cloudflare Ban.
+
+> API url can be configured in `config/constants.ts`, the default development api url is `http://127.0.0.1:3001`
 
 # Asset
 

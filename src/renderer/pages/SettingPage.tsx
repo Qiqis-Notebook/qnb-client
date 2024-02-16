@@ -3,10 +3,10 @@ import { defaultSettings, useSettings } from "@Context/SettingsContext";
 
 // Components
 import KeyCaptureButton from "@Components/KeyCaptureButton";
-import checkKeybindError from "@Utils/checkKeybindError";
 
 // Utils
 import { toast } from "react-toastify";
+import checkKeybindError from "@Utils/checkKeybindError";
 import isDuplicateKeybind from "@Utils/isDuplicateKeybind";
 
 function safeParseFloat(value: string, fallback: number): number {
@@ -99,6 +99,50 @@ export default function SettingPage() {
                     routeWindow: {
                       ...settings.routeWindow,
                       autoStart: e.target.checked,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+          <div className="divider h-1 my-0" />
+          {/* Borderless */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg">Borderless Window</h2>
+            <div className="flex gap-1 justify-between items-center">
+              <p>Launch the route window in borderless mode.</p>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={settings.routeWindow.borderless}
+                onChange={(e) =>
+                  updateSettings({
+                    ...settings,
+                    routeWindow: {
+                      ...settings.routeWindow,
+                      borderless: e.target.checked,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+          <div className="divider h-1 my-0" />
+          {/* Save Position */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg">Save Position</h2>
+            <div className="flex gap-1 justify-between items-center">
+              <p>Save the route window position.</p>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={settings.routeWindow.savePosition}
+                onChange={(e) =>
+                  updateSettings({
+                    ...settings,
+                    routeWindow: {
+                      ...settings.routeWindow,
+                      savePosition: e.target.checked,
                     },
                   })
                 }
