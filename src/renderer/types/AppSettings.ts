@@ -13,6 +13,8 @@ export interface AppSettings {
   routeWindow: {
     autoStart: boolean;
     opacity: number;
+    borderless: boolean;
+    savePosition: boolean;
   };
   keybinds: {
     prev: KeyBinds;

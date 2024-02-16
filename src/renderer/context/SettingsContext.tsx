@@ -5,7 +5,12 @@ import {
   useState,
   useEffect,
 } from "react";
+
+// Types
 import { AppSettings } from "@Types/AppSettings";
+
+// Utils
+import { syncSettings } from "@Utils/syncSetting";
 
 interface SettingsContextProps {
   settings: AppSettings;
@@ -18,7 +23,12 @@ const SettingsContext = createContext<SettingsContextProps | undefined>(
 
 export const defaultSettings = {
   mainWindow: { minimize: true, reducedColor: false },
-  routeWindow: { autoStart: false, opacity: 1 },
+  routeWindow: {
+    autoStart: false,
+    opacity: 1,
+    borderless: false,
+    savePosition: true,
+  },
   keybinds: {
     prev: { enable: true, shift: false, ctrl: false, alt: true, key: "Left" },
     next: { enable: true, shift: false, ctrl: false, alt: true, key: "Right" },
@@ -45,14 +55,21 @@ function SettingsProvider({ children }: { children: ReactNode }) {
     const storedSettings = localStorage.getItem("appSettings");
     if (!storedSettings) {
       localStorage.setItem("appSettings", JSON.stringify(defaultSettings));
+      return defaultSettings;
+    } else {
+      const savedSettings = JSON.parse(storedSettings);
+
+      // Syncronise settings if there are new values
+      const updatedSettings = syncSettings(savedSettings, defaultSettings);
+
+      localStorage.setItem("appSettings", JSON.stringify(updatedSettings));
+      return updatedSettings;
     }
-    return storedSettings ? JSON.parse(storedSettings) : defaultSettings;
   });
 
   const updateSettings = (newSettings: AppSettings) => {
     setSettings(newSettings);
     localStorage.setItem("appSettings", JSON.stringify(newSettings));
-    // TODO: Send to main process
   };
 
   useEffect(() => {
