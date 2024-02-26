@@ -7,6 +7,7 @@ import {
   shell,
 } from "electron";
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
+import Store from "electron-store";
 
 // Constants
 import { isDev, API_URL } from "@Config/constants";
@@ -122,6 +123,12 @@ ipcMain.on("settings", async (event, settings: AppSettings) => {
   appSettings = settings;
 });
 
+// App setting file
+interface StoreSchema {
+  overlayPosition: { x: number; y: number };
+}
+const store = new Store<StoreSchema>();
+
 // Windows
 let mainWindow: BrowserWindow;
 let overlayWindow: BrowserWindow;
@@ -174,6 +181,8 @@ const createWindow = (): void => {
 };
 
 function createOverlayWindow(url: string) {
+  const overlayPosition = store.get("overlayPosition");
+
   if (overlayWindow) {
     overlayWindow.close();
   }
@@ -182,11 +191,20 @@ function createOverlayWindow(url: string) {
     minWidth: 400,
     height: 375,
     width: 400,
+    x:
+      appSettings.routeWindow.savePosition && overlayPosition
+        ? overlayPosition.x
+        : undefined,
+    y:
+      appSettings.routeWindow.savePosition && overlayPosition
+        ? overlayPosition.y
+        : undefined,
     backgroundColor: "#000",
     icon: nativeImage.createFromPath(iconPath),
     title: "Qiqi's Notebook",
     opacity: appSettings?.routeWindow.opacity ?? 1,
     minimizable: false,
+    titleBarStyle: appSettings?.routeWindow.borderless ? "hidden" : "default",
   });
   overlayWindow.loadURL(url);
 
@@ -196,6 +214,16 @@ function createOverlayWindow(url: string) {
   overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true }); // Mac
   overlayWindow.setAlwaysOnTop(true, "screen-saver");
   overlayWindow.moveTop();
+
+  // Save window position on close
+  if (appSettings.routeWindow.savePosition) {
+    overlayWindow.on("close", () => {
+      if (overlayWindow) {
+        const position = overlayWindow.getPosition();
+        store.set("overlayPosition", { x: position[0], y: position[1] });
+      }
+    });
+  }
 
   // Global shortcut
   const keybinds = appSettings?.keybinds;
