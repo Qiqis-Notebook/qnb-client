@@ -106,7 +106,7 @@ export default function RoutePage() {
         window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
           if (isMounted) {
             if (resp.data) {
-              setData(resp.data.data as RouteObject);
+              setData(resp.data.data.data as RouteObject);
             }
             setLoading(false);
           }

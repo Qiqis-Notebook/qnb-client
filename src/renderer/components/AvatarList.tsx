@@ -15,8 +15,8 @@ export default function AvatarList({ values = [] }: { values?: string[] }) {
           className="h-10 w-10 rounded-full border-2 border-white bg-black"
           src={`${BASE_URL}/resources/images/${item}.png`}
           alt={`${item}-icon`}
-          width={32}
-          height={32}
+          width={40}
+          height={40}
           key={`icon-${idx}`}
         />
       ));

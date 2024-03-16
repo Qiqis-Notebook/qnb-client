@@ -41,7 +41,7 @@ export default function SearchPage() {
         window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
           if (isMounted) {
             if (resp.data) {
-              setData(resp.data as RoutesResponse);
+              setData(resp.data.data as RoutesResponse);
             } else {
               setData(fallbackData);
             }
