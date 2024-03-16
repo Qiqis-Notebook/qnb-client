@@ -41,7 +41,7 @@ export default function SearchPage() {
         window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
           if (isMounted) {
             if (resp.data) {
-              setData(resp.data.data as RoutesResponse);
+              setData(resp.data as RoutesResponse);
             } else {
               setData(fallbackData);
             }
@@ -58,11 +58,11 @@ export default function SearchPage() {
 
     fetchData(
       query
-        ? `/gateway/routes/search?q=${encodeURI(query)}&page=${pageNumber}`
+        ? `/gateway/routes/search?query=${encodeURI(query)}&page=${pageNumber}`
         : `/gateway/routes?page=${pageNumber}`,
       id
     );
-    navigate(`/routes/search?q=${encodeURI(query)}&page=${pageNumber}`, {
+    navigate(`/routes/search?query=${encodeURI(query)}&page=${pageNumber}`, {
       replace: true,
     });
     return () => {

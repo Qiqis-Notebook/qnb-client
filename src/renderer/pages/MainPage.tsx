@@ -43,7 +43,7 @@ export default function MainPage() {
     if (match) {
       navigate(`/route/${match[2]}`);
     } else {
-      navigate(`/routes/search?q=${encodeURI(query)}`);
+      navigate(`/routes/search?query=${encodeURI(query)}`);
     }
   };
 

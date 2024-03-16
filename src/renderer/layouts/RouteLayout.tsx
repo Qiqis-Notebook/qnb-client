@@ -10,7 +10,7 @@ export default function RouteLayout() {
 
   // Extract the query parameter from the location object
   const queryParams = new URLSearchParams(location.search);
-  const queryParamValue = queryParams.get("q");
+  const queryParamValue = queryParams.get("query");
 
   const [value, setValue] = useState<string>(queryParamValue ?? "");
   const [query, setQuery] = useState<string>(queryParamValue ?? "");
