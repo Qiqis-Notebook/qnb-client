@@ -55,7 +55,7 @@ export default function MainPage() {
         window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
           if (isMounted) {
             if (resp && resp.data) {
-              setFeatured(resp.data.data as RouteDetail[]);
+              setFeatured(resp.data.data.data as RouteDetail[]);
             } else {
               setFeatured([]);
             }
