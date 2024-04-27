@@ -6,49 +6,17 @@ import {
   nativeImage,
   shell,
 } from "electron";
+
+// Utils
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import Store from "electron-store";
+import translateToAccelerator from "./utils/translateToAccelerator";
 
 // Constants
 import { isDev, API_URL } from "@Config/constants";
 
 // Types
 import { AppSettings } from "@Types/AppSettings";
-interface KeyBinds {
-  shift: boolean;
-  ctrl: boolean;
-  alt: boolean;
-  key: string;
-}
-
-/**
- * Checks that a keybind is valid
- * @param keybind Keybind to check
- * @returns Error message or null if no error
- */
-function translateToAccelerator(keybind: KeyBinds): string | null {
-  if (!keybind.alt && !keybind.ctrl && !keybind.shift) {
-    return null;
-  }
-  if (!keybind.key) {
-    return null;
-  }
-
-  let keys = [];
-  if (keybind.ctrl) {
-    keys.push("CommandOrControl");
-  }
-  if (keybind.shift) {
-    keys.push("Shift");
-  }
-  if (keybind.alt) {
-    keys.push("Alt");
-  }
-  keys.push(keybind.key);
-
-  const accelerator = keys.join("+");
-  return accelerator;
-}
 
 const iconPath =
   process.platform !== "darwin"
@@ -125,7 +93,7 @@ ipcMain.on("settings", async (event, settings: AppSettings) => {
 
 // App setting file
 interface StoreSchema {
-  overlayPosition: { x: number; y: number };
+  overlayBounds: { x: number; y: number; width: number; height: number };
 }
 const store = new Store<StoreSchema>();
 
@@ -181,7 +149,7 @@ const createWindow = (): void => {
 };
 
 function createOverlayWindow(url: string) {
-  const overlayPosition = store.get("overlayPosition");
+  const overlayBounds = store.get("overlayBounds");
 
   if (overlayWindow) {
     overlayWindow.close();
@@ -189,15 +157,21 @@ function createOverlayWindow(url: string) {
   overlayWindow = new BrowserWindow({
     minHeight: 375,
     minWidth: 400,
-    height: 375,
-    width: 400,
+    height:
+      appSettings.routeWindow.saveSize && overlayBounds
+        ? overlayBounds.height
+        : 375,
+    width:
+      appSettings.routeWindow.saveSize && overlayBounds
+        ? overlayBounds.width
+        : 400,
     x:
-      appSettings.routeWindow.savePosition && overlayPosition
-        ? overlayPosition.x
+      appSettings.routeWindow.savePosition && overlayBounds
+        ? overlayBounds.x
         : undefined,
     y:
-      appSettings.routeWindow.savePosition && overlayPosition
-        ? overlayPosition.y
+      appSettings.routeWindow.savePosition && overlayBounds
+        ? overlayBounds.y
         : undefined,
     backgroundColor: "#000",
     icon: nativeImage.createFromPath(iconPath),
@@ -215,15 +189,17 @@ function createOverlayWindow(url: string) {
   overlayWindow.setAlwaysOnTop(true, "screen-saver");
   overlayWindow.moveTop();
 
-  // Save window position on close
-  if (appSettings.routeWindow.savePosition) {
-    overlayWindow.on("close", () => {
-      if (overlayWindow) {
-        const position = overlayWindow.getPosition();
-        store.set("overlayPosition", { x: position[0], y: position[1] });
-      }
-    });
+  // Set the size of the window (constructor height/width doesn't work well)
+  if (appSettings.routeWindow.saveSize) {
+    overlayWindow.setSize(overlayBounds.width, overlayBounds.height);
   }
+
+  // Save window position/size on close
+  overlayWindow.on("close", () => {
+    if (overlayWindow) {
+      store.set("overlayBounds", overlayWindow.getBounds());
+    }
+  });
 
   // Global shortcut
   const keybinds = appSettings?.keybinds;

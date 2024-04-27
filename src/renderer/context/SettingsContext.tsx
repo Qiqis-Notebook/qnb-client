@@ -28,6 +28,7 @@ export const defaultSettings = {
     opacity: 1,
     borderless: false,
     savePosition: true,
+    saveSize: true,
   },
   keybinds: {
     prev: { enable: true, shift: false, ctrl: false, alt: true, key: "Left" },

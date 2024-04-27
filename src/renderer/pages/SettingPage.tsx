@@ -150,6 +150,28 @@ export default function SettingPage() {
             </div>
           </div>
           <div className="divider h-1 my-0" />
+          {/* Save Size */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg">Save Size</h2>
+            <div className="flex gap-1 justify-between items-center">
+              <p>Save the route window size.</p>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={settings.routeWindow.saveSize}
+                onChange={(e) =>
+                  updateSettings({
+                    ...settings,
+                    routeWindow: {
+                      ...settings.routeWindow,
+                      saveSize: e.target.checked,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+          <div className="divider h-1 my-0" />
           {/* Opacity */}
           <div className="flex flex-col gap-2">
             <h2 className="text-lg">Opacity</h2>
