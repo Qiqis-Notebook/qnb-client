@@ -5,6 +5,7 @@ import {
   ipcMain,
   nativeImage,
   shell,
+  screen,
 } from "electron";
 
 // Utils
@@ -151,20 +152,27 @@ const createWindow = (): void => {
 function createOverlayWindow(url: string) {
   const overlayBounds = store.get("overlayBounds");
 
+  /**
+   * Scale factor
+   * Workaround for window size from save when the screen pixel scaling is not 1
+   * Non-borderless window will work too (somehow)
+   *
+   * BUG: Setting size for screens with pixel scaling will not work properly
+   * When setting the window size, electron will apply scale factor automatically to the size.
+   * Scale the size to accomodate for minimum sized window.
+   */
+  const sf = overlayBounds
+    ? screen.getDisplayMatching(overlayBounds).scaleFactor
+    : 1;
+
   if (overlayWindow) {
     overlayWindow.close();
   }
   overlayWindow = new BrowserWindow({
-    minHeight: 375,
-    minWidth: 400,
-    height:
-      appSettings.routeWindow.saveSize && overlayBounds
-        ? overlayBounds.height
-        : 375,
-    width:
-      appSettings.routeWindow.saveSize && overlayBounds
-        ? overlayBounds.width
-        : 400,
+    minHeight: Math.round(375 / sf),
+    minWidth: Math.round(400 / sf),
+    height: Math.round(375 / sf),
+    width: Math.round(400 / sf),
     x:
       appSettings.routeWindow.savePosition && overlayBounds
         ? overlayBounds.x
@@ -189,17 +197,9 @@ function createOverlayWindow(url: string) {
   overlayWindow.setAlwaysOnTop(true, "screen-saver");
   overlayWindow.moveTop();
 
-  // Set the size of the window (constructor height/width doesn't work well)
-  if (appSettings.routeWindow.saveSize) {
+  if (appSettings.routeWindow.saveSize && overlayBounds) {
     overlayWindow.setSize(overlayBounds.width, overlayBounds.height);
   }
-
-  // Save window position/size on close
-  overlayWindow.on("close", () => {
-    if (overlayWindow) {
-      store.set("overlayBounds", overlayWindow.getBounds());
-    }
-  });
 
   // Global shortcut
   const keybinds = appSettings?.keybinds;
@@ -257,8 +257,19 @@ function createOverlayWindow(url: string) {
     }
   }
 
+  // Reset minimum window size if there's a saved window size
+  overlayWindow.on("ready-to-show", () => {
+    if (!overlayBounds) return;
+    overlayWindow.setMinimumSize(400, 375);
+  });
+
   // Clean up on close
   overlayWindow.on("close", () => {
+    // Save window position/size
+    if (overlayWindow) {
+      store.set("overlayBounds", overlayWindow.getBounds());
+    }
+
     overlayWindow = null;
     globalShortcut.unregisterAll();
     if (mainWindow) {
