@@ -15,6 +15,7 @@ export interface AppSettings {
     opacity: number;
     borderless: boolean;
     savePosition: boolean;
+    saveSize: boolean;
   };
   keybinds: {
     prev: KeyBinds;

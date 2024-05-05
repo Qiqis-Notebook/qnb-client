@@ -5,50 +5,19 @@ import {
   ipcMain,
   nativeImage,
   shell,
+  screen,
 } from "electron";
+
+// Utils
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import Store from "electron-store";
+import translateToAccelerator from "./utils/translateToAccelerator";
 
 // Constants
 import { isDev, API_URL } from "@Config/constants";
 
 // Types
 import { AppSettings } from "@Types/AppSettings";
-interface KeyBinds {
-  shift: boolean;
-  ctrl: boolean;
-  alt: boolean;
-  key: string;
-}
-
-/**
- * Checks that a keybind is valid
- * @param keybind Keybind to check
- * @returns Error message or null if no error
- */
-function translateToAccelerator(keybind: KeyBinds): string | null {
-  if (!keybind.alt && !keybind.ctrl && !keybind.shift) {
-    return null;
-  }
-  if (!keybind.key) {
-    return null;
-  }
-
-  let keys = [];
-  if (keybind.ctrl) {
-    keys.push("CommandOrControl");
-  }
-  if (keybind.shift) {
-    keys.push("Shift");
-  }
-  if (keybind.alt) {
-    keys.push("Alt");
-  }
-  keys.push(keybind.key);
-
-  const accelerator = keys.join("+");
-  return accelerator;
-}
 
 const iconPath =
   process.platform !== "darwin"
@@ -125,7 +94,7 @@ ipcMain.on("settings", async (event, settings: AppSettings) => {
 
 // App setting file
 interface StoreSchema {
-  overlayPosition: { x: number; y: number };
+  overlayBounds: { x: number; y: number; width: number; height: number };
 }
 const store = new Store<StoreSchema>();
 
@@ -181,23 +150,36 @@ const createWindow = (): void => {
 };
 
 function createOverlayWindow(url: string) {
-  const overlayPosition = store.get("overlayPosition");
+  const overlayBounds = store.get("overlayBounds");
+
+  /**
+   * Scale factor
+   * Workaround for window size from save when the screen pixel scaling is not 1
+   * Non-borderless window will work too (somehow)
+   *
+   * BUG: Setting size for screens with pixel scaling will not work properly
+   * When setting the window size, electron will apply scale factor automatically to the size.
+   * Scale the size to accomodate for minimum sized window.
+   */
+  const sf = overlayBounds
+    ? screen.getDisplayMatching(overlayBounds).scaleFactor
+    : 1;
 
   if (overlayWindow) {
     overlayWindow.close();
   }
   overlayWindow = new BrowserWindow({
-    minHeight: 375,
-    minWidth: 400,
-    height: 375,
-    width: 400,
+    minHeight: Math.round(375 / sf),
+    minWidth: Math.round(400 / sf),
+    height: Math.round(375 / sf),
+    width: Math.round(400 / sf),
     x:
-      appSettings.routeWindow.savePosition && overlayPosition
-        ? overlayPosition.x
+      appSettings.routeWindow.savePosition && overlayBounds
+        ? overlayBounds.x
         : undefined,
     y:
-      appSettings.routeWindow.savePosition && overlayPosition
-        ? overlayPosition.y
+      appSettings.routeWindow.savePosition && overlayBounds
+        ? overlayBounds.y
         : undefined,
     backgroundColor: "#000",
     icon: nativeImage.createFromPath(iconPath),
@@ -215,14 +197,8 @@ function createOverlayWindow(url: string) {
   overlayWindow.setAlwaysOnTop(true, "screen-saver");
   overlayWindow.moveTop();
 
-  // Save window position on close
-  if (appSettings.routeWindow.savePosition) {
-    overlayWindow.on("close", () => {
-      if (overlayWindow) {
-        const position = overlayWindow.getPosition();
-        store.set("overlayPosition", { x: position[0], y: position[1] });
-      }
-    });
+  if (appSettings.routeWindow.saveSize && overlayBounds) {
+    overlayWindow.setSize(overlayBounds.width, overlayBounds.height);
   }
 
   // Global shortcut
@@ -281,8 +257,19 @@ function createOverlayWindow(url: string) {
     }
   }
 
+  // Reset minimum window size if there's a saved window size
+  overlayWindow.on("ready-to-show", () => {
+    if (!overlayBounds) return;
+    overlayWindow.setMinimumSize(400, 375);
+  });
+
   // Clean up on close
   overlayWindow.on("close", () => {
+    // Save window position/size
+    if (overlayWindow) {
+      store.set("overlayBounds", overlayWindow.getBounds());
+    }
+
     overlayWindow = null;
     globalShortcut.unregisterAll();
     if (mainWindow) {
