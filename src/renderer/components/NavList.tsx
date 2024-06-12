@@ -1,4 +1,5 @@
 "use client";
+import { Fragment } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 // Utils
@@ -48,14 +49,18 @@ function NavList({ routes }: { routes: typeof RouteProp }) {
                 </div>
               </NavLink>
             ) : (
-              <div className="flex h-8 items-center rounded px-2">
-                {object.icon && <Icon {...iconStyle} />}
-                <div className="mx-2 font-normal">{object.title}</div>
-              </div>
+              <Fragment>
+                {object.child && (
+                  <hr className="border-1 my-1 border-base-content opacity-20" />
+                )}
+                <div className="flex h-8 items-center rounded px-2 text-sm">
+                  {object.icon && <Icon {...iconStyle} />}
+                  <div className="mx-2 truncate font-bold">{object.title}</div>
+                </div>
+              </Fragment>
             )}
             {object.child && (
               <div className="flex flex-col space-y-1">
-                <hr className="border-1 border-base-content opacity-20" />
                 {object.child.map((item, j) => {
                   const ItemIcon = item?.icon;
                   return (
@@ -70,7 +75,7 @@ function NavList({ routes }: { routes: typeof RouteProp }) {
                     >
                       <div
                         className={classNames(
-                          "flex h-8 items-center rounded pl-6 font-light",
+                          "flex h-8 items-center rounded pl-8 font-light",
                           {
                             "bg-primary text-primary-content":
                               pathname === item.url,
