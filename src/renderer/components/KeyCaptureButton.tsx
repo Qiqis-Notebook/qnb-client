@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // Types
-import { KeyBinds } from "@Types/AppSettings";
+import type { KeyBinds } from "@Types/AppSettings";
 
 // Utils
 import translateKey from "@Utils/translateKey";

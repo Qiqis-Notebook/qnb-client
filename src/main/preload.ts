@@ -2,7 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
-import { AppSettings } from "@Types/AppSettings";
+import type { AppSettings } from "@Types/AppSettings";
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
 export type Channels = "data-reply" | "window-event";

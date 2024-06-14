@@ -21,7 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 // Types
-import { RouteDetail, RouteObject } from "@Types/Routes";
+import type { RouteDetail, RouteObject } from "@Types/Routes";
 
 // Component
 import Linkify from "linkify-react";

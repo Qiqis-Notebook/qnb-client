@@ -2,7 +2,7 @@ import { useState, useEffect, useId } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Types
-import { RoutesResponse } from "@Types/Routes";
+import type { RoutesResponse } from "@Types/Routes";
 
 // Utils
 import { toast } from "react-toastify";

@@ -1,8 +1,8 @@
 import Dexie from "dexie";
 
 // Type
-import DBFavorite from "./type/DBFavorite";
-import DBRecent from "./type/DBRecent";
+import type DBFavorite from "./type/DBFavorite";
+import type DBRecent from "./type/DBRecent";
 
 /**
  * Indexed DB wrapper

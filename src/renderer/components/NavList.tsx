@@ -6,7 +6,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
 // Types
-import { routes as RouteProp } from "@Types/RouteTypes";
+import type { routes as RouteProp } from "@Types/RouteTypes";
 
 // Nav Icon styles
 const iconStyle = {

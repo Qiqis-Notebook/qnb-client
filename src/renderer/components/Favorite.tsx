@@ -5,8 +5,8 @@ import { StarIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconFill } from "@heroicons/react/24/solid";
 
 // Types
-import { RouteDetail, RouteObject } from "@Types/Routes";
-import DBFavorite from "../db/type/DBFavorite";
+import type { RouteDetail, RouteObject } from "@Types/Routes";
+import type DBFavorite from "../db/type/DBFavorite";
 
 // Utils
 import { toast } from "react-toastify";

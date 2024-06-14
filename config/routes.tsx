@@ -1,5 +1,5 @@
 // Icon
-import { RouteObject } from "@Types/RouteTypes";
+import type { RouteObject } from "@Types/RouteTypes";
 import { HomeIcon, MapIcon } from "@heroicons/react/24/outline";
 
 export const routes: RouteObject[] = [

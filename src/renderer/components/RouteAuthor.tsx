@@ -1,6 +1,6 @@
-import { RouteDetail, RouteObject } from "@Types/Routes";
-import DBFavorite from "../db/type/DBFavorite";
-import DBRecent from "../db/type/DBRecent";
+import type { RouteDetail, RouteObject } from "@Types/Routes";
+import type DBFavorite from "../db/type/DBFavorite";
+import type DBRecent from "../db/type/DBRecent";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";

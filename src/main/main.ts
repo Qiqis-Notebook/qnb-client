@@ -9,7 +9,7 @@ import {
 } from "electron";
 
 // Utils
-import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
+import axios from "axios";
 import Store from "electron-store";
 import translateToAccelerator from "./utils/translateToAccelerator";
 import scaleValue from "./utils/scaleValue";
@@ -29,6 +29,7 @@ import {
 } from "@Config/constants";
 
 // Types
+import type { AxiosRequestConfig, CancelTokenSource } from "axios";
 import type { AppSettings } from "@Types/AppSettings";
 
 const iconPath =

@@ -1,4 +1,4 @@
-import { AppSettings } from "@Types/AppSettings";
+import type { AppSettings } from "@Types/AppSettings";
 
 /**
  * Synchronizes the provided settings object with the default settings,

@@ -1,5 +1,5 @@
 // Types
-import { KeyBinds } from "@Types/AppSettings";
+import type { KeyBinds } from "@Types/AppSettings";
 
 /**
  * Checks that a keybind is valid
