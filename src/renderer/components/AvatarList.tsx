@@ -3,7 +3,16 @@ import { Fragment } from "react";
 // Constants
 import { BASE_URL } from "@Config/constants";
 
-const ignoreList = ["i_23", "i_24", "i_103", "i_105", "i_300"];
+const ignoreList = [
+  "i_23",
+  "i_24",
+  "i_103",
+  "i_105",
+  "i_398",
+  "i_399",
+  "i_400",
+  "i_401",
+];
 const groupLimit = 7;
 export default function AvatarList({ values = [] }: { values?: string[] }) {
   const renderList = values.filter((item) => !ignoreList.includes(item));

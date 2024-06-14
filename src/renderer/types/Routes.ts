@@ -75,6 +75,7 @@ export interface RoutesObject {
   public: boolean;
   verified: boolean;
   featured: boolean;
+  game: "Genshin" | "WuWa";
   createdAt: string;
   updatedAt: string;
 }

@@ -14,6 +14,7 @@ export default function RouteLayout() {
 
   const [value, setValue] = useState<string>(queryParamValue ?? "");
   const [query, setQuery] = useState<string>(queryParamValue ?? "");
+  const [game, setGame] = useState<string | null>(queryParamValue ?? null);
   const [page, setPage] = useState<number>(1);
 
   const searchRoute = (e: FormEvent) => {
@@ -23,6 +24,57 @@ export default function RouteLayout() {
   };
   return (
     <div className="flex flex-col gap-2 grow p-2">
+      {/* Game selector */}
+      <div className="flex flex-row gap-2 p-2">
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <input
+              type="radio"
+              name="radio-genshin"
+              className="radio"
+              checked={game === null}
+              onChange={(e) => {
+                if (!e.currentTarget.checked) return;
+                setGame(null);
+                setPage(1);
+              }}
+            />
+            <span className="label-text">All</span>
+          </label>
+        </div>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <input
+              type="radio"
+              name="radio-genshin"
+              className="radio"
+              checked={game === "Genshin"}
+              onChange={(e) => {
+                if (!e.currentTarget.checked) return;
+                setGame("Genshin");
+                setPage(1);
+              }}
+            />
+            <span className="label-text">Genshin</span>
+          </label>
+        </div>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <input
+              type="radio"
+              name="radio-wuwa"
+              className="radio"
+              checked={game === "WuWa"}
+              onChange={(e) => {
+                if (!e.currentTarget.checked) return;
+                setGame("WuWa");
+                setPage(1);
+              }}
+            />
+            <span className="label-text">Wuthering Waves</span>
+          </label>
+        </div>
+      </div>
       {/* Search bar */}
       <div className="flex items-center">
         <form className="w-full relative" onSubmit={searchRoute}>
@@ -39,7 +91,7 @@ export default function RouteLayout() {
         </form>
       </div>
       {/* Pages */}
-      <Outlet context={{ query, page: [page, setPage] }} />
+      <Outlet context={{ query, page: [page, setPage], game }} />
     </div>
   );
 }
@@ -48,5 +100,6 @@ export function useQuery() {
   return useOutletContext<{
     query: string;
     page: [number, Dispatch<SetStateAction<number>>];
+    game: "Genshin" | "WuWa" | null;
   }>();
 }
