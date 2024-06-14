@@ -7,7 +7,7 @@ import {
 } from "react";
 
 // Types
-import { AppSettings } from "@Types/AppSettings";
+import type { AppSettings } from "@Types/AppSettings";
 
 // Utils
 import { syncSettings } from "@Utils/syncSetting";
@@ -21,7 +21,7 @@ const SettingsContext = createContext<SettingsContextProps | undefined>(
   undefined
 );
 
-export const defaultSettings = {
+export const defaultSettings: AppSettings = {
   mainWindow: { minimize: true, reducedColor: false },
   routeWindow: {
     autoStart: false,
@@ -29,6 +29,7 @@ export const defaultSettings = {
     borderless: false,
     savePosition: true,
     saveSize: true,
+    compensateScaling: false,
   },
   keybinds: {
     prev: { enable: true, shift: false, ctrl: false, alt: true, key: "Left" },

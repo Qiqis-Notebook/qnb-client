@@ -12,12 +12,24 @@ import {
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import Store from "electron-store";
 import translateToAccelerator from "./utils/translateToAccelerator";
+import scaleValue from "./utils/scaleValue";
 
 // Constants
-import { isDev, API_URL } from "@Config/constants";
+import {
+  isDev,
+  API_URL,
+  MAIN_HEIGHT,
+  MAIN_MIN_HEIGHT,
+  MAIN_MIN_WIDTH,
+  MAIN_WIDTH,
+  ROUTE_MIN_HEIGHT,
+  ROUTE_MIN_WIDTH,
+  ROUTE_HEIGHT,
+  ROUTE_WIDTH,
+} from "@Config/constants";
 
 // Types
-import { AppSettings } from "@Types/AppSettings";
+import type { AppSettings } from "@Types/AppSettings";
 
 const iconPath =
   process.platform !== "darwin"
@@ -105,10 +117,10 @@ let overlayWindow: BrowserWindow;
 const createWindow = (): void => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    minHeight: 733,
-    minWidth: 1016,
-    height: 733,
-    width: 1216,
+    minHeight: MAIN_MIN_HEIGHT,
+    minWidth: MAIN_MIN_WIDTH,
+    height: MAIN_HEIGHT,
+    width: MAIN_WIDTH,
     icon: nativeImage.createFromPath(iconPath),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -150,43 +162,42 @@ const createWindow = (): void => {
 };
 
 function createOverlayWindow(url: string) {
+  const { saveSize, savePosition, opacity, borderless, compensateScaling } =
+    appSettings.routeWindow;
   const overlayBounds = store.get("overlayBounds");
-
-  /**
-   * Scale factor
-   * Workaround for window size from save when the screen pixel scaling is not 1
-   * Non-borderless window will work too (somehow)
-   *
-   * BUG: Setting size for screens with pixel scaling will not work properly
-   * When setting the window size, electron will apply scale factor automatically to the size.
-   * Scale the size to accomodate for minimum sized window.
-   */
-  const sf = overlayBounds
-    ? screen.getDisplayMatching(overlayBounds).scaleFactor
+  const sf = compensateScaling
+    ? overlayBounds
+      ? screen.getDisplayMatching(overlayBounds).scaleFactor
+      : screen.getPrimaryDisplay().scaleFactor
     : 1;
+  const minWidth = Math.round(ROUTE_MIN_WIDTH / sf);
+  const minHeight = Math.round(ROUTE_MIN_HEIGHT / sf);
 
   if (overlayWindow) {
     overlayWindow.close();
   }
   overlayWindow = new BrowserWindow({
-    minHeight: Math.round(375 / sf),
-    minWidth: Math.round(400 / sf),
-    height: Math.round(375 / sf),
-    width: Math.round(400 / sf),
-    x:
-      appSettings.routeWindow.savePosition && overlayBounds
-        ? overlayBounds.x
-        : undefined,
-    y:
-      appSettings.routeWindow.savePosition && overlayBounds
-        ? overlayBounds.y
-        : undefined,
+    minHeight: minHeight,
+    minWidth: minWidth,
+    height:
+      saveSize && overlayBounds?.height
+        ? overlayBounds.height
+        : Math.round(ROUTE_HEIGHT / sf),
+    width:
+      saveSize && overlayBounds?.width
+        ? overlayBounds.width
+        : Math.round(ROUTE_WIDTH / sf),
+    x: savePosition && overlayBounds ? overlayBounds.x : undefined,
+    y: savePosition && overlayBounds ? overlayBounds.y : undefined,
     backgroundColor: "#000",
     icon: nativeImage.createFromPath(iconPath),
     title: "Qiqi's Notebook",
-    opacity: appSettings?.routeWindow.opacity ?? 1,
+    opacity: opacity ?? 1,
     minimizable: false,
-    titleBarStyle: appSettings?.routeWindow.borderless ? "hidden" : "default",
+    titleBarStyle: borderless ? "hidden" : "default",
+    webPreferences: {
+      zoomFactor: scaleValue(sf),
+    },
   });
   overlayWindow.loadURL(url);
 
@@ -197,9 +208,72 @@ function createOverlayWindow(url: string) {
   overlayWindow.setAlwaysOnTop(true, "screen-saver");
   overlayWindow.moveTop();
 
-  if (appSettings.routeWindow.saveSize && overlayBounds) {
-    overlayWindow.setSize(overlayBounds.width, overlayBounds.height);
+  // BUG: Borderless mode does not respect initialization parameters, requires the following to reset the window properties
+  // Load window properties from save
+  if (saveSize && overlayBounds) {
+    const { width, height } = overlayBounds;
+    const newWidth = Math.max(Math.round(ROUTE_MIN_WIDTH / sf), width);
+    const newHeight = Math.max(Math.round(ROUTE_MIN_HEIGHT / sf), height);
+    overlayWindow.setSize(newWidth, newHeight);
+  } else {
+    const newWidth = Math.max(minWidth, Math.round(ROUTE_WIDTH / sf));
+    const newHeight = Math.max(minHeight, Math.round(ROUTE_HEIGHT / sf));
+    overlayWindow.setSize(newWidth, newHeight);
   }
+
+  // Set window properties
+  overlayWindow.on("ready-to-show", () => {
+    overlayWindow.setMinimumSize(minWidth, minHeight);
+    overlayWindow.webContents.setZoomFactor(scaleValue(sf));
+
+    // BUG: Borderless mode does not respect initialization parameters, requires the following to reset the window properties
+    // Load window properties from save
+    if (saveSize && overlayBounds) {
+      const { width, height } = overlayBounds;
+      const newWidth = Math.max(Math.round(ROUTE_MIN_WIDTH / sf), width);
+      const newHeight = Math.max(Math.round(ROUTE_MIN_HEIGHT / sf), height);
+      overlayWindow.setSize(newWidth, newHeight);
+    } else {
+      overlayWindow.setSize(
+        Math.round(ROUTE_WIDTH / sf),
+        Math.round(ROUTE_HEIGHT / sf)
+      );
+    }
+  });
+
+  // Clean up on close
+  overlayWindow.on("close", () => {
+    // Save window position/size
+    if (overlayWindow) {
+      store.set("overlayBounds", overlayWindow.getBounds());
+    }
+
+    overlayWindow = null;
+    globalShortcut.unregisterAll();
+    if (mainWindow) {
+      mainWindow.webContents.send("window-event", 0);
+    }
+  });
+
+  // Update window size and scale after moving it
+  overlayWindow.on("moved", () => {
+    if (!compensateScaling) {
+      return;
+    }
+    const newSf = screen.getDisplayMatching(
+      overlayWindow.getBounds()
+    ).scaleFactor;
+    const newMinWidth = Math.round(ROUTE_MIN_WIDTH / newSf);
+    const newMinHeight = Math.round(ROUTE_MIN_HEIGHT / newSf);
+
+    const [currentWidth, currentHeight] = overlayWindow.getSize();
+    const newWidth = Math.max(newMinWidth, currentWidth);
+    const newHeight = Math.max(newMinHeight, currentHeight);
+
+    overlayWindow.setMinimumSize(newMinWidth, newMinHeight);
+    overlayWindow.setSize(newWidth, newHeight);
+    overlayWindow.webContents.setZoomFactor(scaleValue(newSf));
+  });
 
   // Global shortcut
   const keybinds = appSettings?.keybinds;
@@ -256,26 +330,6 @@ function createOverlayWindow(url: string) {
       }
     }
   }
-
-  // Reset minimum window size if there's a saved window size
-  overlayWindow.on("ready-to-show", () => {
-    if (!overlayBounds) return;
-    overlayWindow.setMinimumSize(400, 375);
-  });
-
-  // Clean up on close
-  overlayWindow.on("close", () => {
-    // Save window position/size
-    if (overlayWindow) {
-      store.set("overlayBounds", overlayWindow.getBounds());
-    }
-
-    overlayWindow = null;
-    globalShortcut.unregisterAll();
-    if (mainWindow) {
-      mainWindow.webContents.send("window-event", 0);
-    }
-  });
 }
 
 // This method will be called when Electron has finished
