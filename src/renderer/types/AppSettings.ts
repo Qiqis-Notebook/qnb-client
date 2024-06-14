@@ -16,6 +16,7 @@ export interface AppSettings {
     borderless: boolean;
     savePosition: boolean;
     saveSize: boolean;
+    compensateScaling: boolean;
   };
   keybinds: {
     prev: KeyBinds;

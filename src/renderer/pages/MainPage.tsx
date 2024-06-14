@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { MAX_ROUTE_DISPLAY } from "@Config/limits";
 
 // Types
-import { RouteDetail } from "@Types/Routes";
-import DBFavorite from "../db/type/DBFavorite";
-import DBRecent from "../db/type/DBRecent";
+import type { RouteDetail } from "@Types/Routes";
+import type DBFavorite from "../db/type/DBFavorite";
+import type DBRecent from "../db/type/DBRecent";
 
 // Utils
 import { favoritesTable, recentTable } from "../db";

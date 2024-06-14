@@ -1,4 +1,4 @@
-import { KeyBinds } from "@Types/AppSettings";
+import type { KeyBinds } from "@Types/AppSettings";
 
 /**
  * Checks if a keybind already exists

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useSettings } from "@Context/SettingsContext";
 
 // Types
-import DBFavorite from "../../db/type/DBFavorite";
-import DBRecent from "../../db/type/DBRecent";
+import type DBFavorite from "../../db/type/DBFavorite";
+import type DBRecent from "../../db/type/DBRecent";
 
 // Assets
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";

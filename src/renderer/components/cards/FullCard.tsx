@@ -4,9 +4,9 @@ import { ReactNode } from "react";
 import { useSettings } from "@Context/SettingsContext";
 
 // Types
-import { RouteDetail } from "@Types/Routes";
-import DBFavorite from "../../db/type/DBFavorite";
-import DBRecent from "../../db/type/DBRecent";
+import type { RouteDetail } from "@Types/Routes";
+import type DBFavorite from "../../db/type/DBFavorite";
+import type DBRecent from "../../db/type/DBRecent";
 
 // Assets
 import { CheckBadgeIcon, PlayIcon } from "@heroicons/react/24/outline";

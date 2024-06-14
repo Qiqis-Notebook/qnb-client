@@ -172,6 +172,31 @@ export default function SettingPage() {
             </div>
           </div>
           <div className="divider h-1 my-0" />
+          {/* Compensate Scaling */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg">Compensate Scaling</h2>
+            <div className="flex gap-1 justify-between items-center">
+              <p>
+                Overrides the native application scaling to adjust for custom
+                resolution scaling on screens.
+              </p>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={settings.routeWindow.compensateScaling}
+                onChange={(e) =>
+                  updateSettings({
+                    ...settings,
+                    routeWindow: {
+                      ...settings.routeWindow,
+                      compensateScaling: e.target.checked,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+          <div className="divider h-1 my-0" />
           {/* Opacity */}
           <div className="flex flex-col gap-2">
             <h2 className="text-lg">Opacity</h2>

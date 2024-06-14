@@ -2,7 +2,7 @@ import { useState, useEffect, useId } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Types
-import { RoutesResponse } from "@Types/Routes";
+import type { RoutesResponse } from "@Types/Routes";
 
 // Utils
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ import StyledScrollbar from "@Components/StyledScrollbar";
 export default function SearchPage() {
   const navigate = useNavigate();
 
-  const { query, page } = useQuery();
+  const { query, page, game } = useQuery();
   const [pageNumber, setPage] = page;
   const [data, setData] = useState<RoutesResponse | null>(null);
 
@@ -58,18 +58,25 @@ export default function SearchPage() {
 
     fetchData(
       query
-        ? `/gateway/routes/search?query=${encodeURI(query)}&page=${pageNumber}`
-        : `/gateway/routes?page=${pageNumber}`,
+        ? `/gateway/routes/search?query=${encodeURI(query)}${
+            game ? `&game=${game}` : ""
+          }&page=${pageNumber}`
+        : `/gateway/routes?page=${pageNumber}${game ? `&game=${game}` : ""}`,
       id
     );
-    navigate(`/routes/search?query=${encodeURI(query)}&page=${pageNumber}`, {
-      replace: true,
-    });
+    navigate(
+      `/routes/search?query=${encodeURI(query)}${
+        game ? `&game=${game}` : ""
+      }&page=${pageNumber}`,
+      {
+        replace: true,
+      }
+    );
     return () => {
       isMounted = false;
       window.electron.ipcRenderer.abortRequest(id);
     };
-  }, [query, pageNumber]);
+  }, [query, pageNumber, game]);
 
   return data ? (
     data.data.routes.length > 0 ? (
