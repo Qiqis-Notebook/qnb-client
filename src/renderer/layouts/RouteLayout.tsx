@@ -11,10 +11,11 @@ export default function RouteLayout() {
   // Extract the query parameter from the location object
   const queryParams = new URLSearchParams(location.search);
   const queryParamValue = queryParams.get("query");
+  const queryParamGame = queryParams.get("game");
 
   const [value, setValue] = useState<string>(queryParamValue ?? "");
   const [query, setQuery] = useState<string>(queryParamValue ?? "");
-  const [game, setGame] = useState<string | null>(queryParamValue ?? null);
+  const [game, setGame] = useState<string | null>(queryParamGame ?? null);
   const [page, setPage] = useState<number>(1);
 
   const searchRoute = (e: FormEvent) => {
