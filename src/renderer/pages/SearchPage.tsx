@@ -17,8 +17,9 @@ import StyledScrollbar from "@Components/StyledScrollbar";
 export default function SearchPage() {
   const navigate = useNavigate();
 
-  const { query, page, game } = useQuery();
+  const { query, page, game, loading } = useQuery();
   const [pageNumber, setPage] = page;
+  const [loadingState, setLoadingState] = loading;
   const [data, setData] = useState<RoutesResponse | null>(null);
 
   // Component id
@@ -36,6 +37,7 @@ export default function SearchPage() {
     let isMounted = true;
     setData(null);
     const fetchData = async (apiUrl: string, requestId: string) => {
+      setLoadingState(true);
       try {
         // Send a message to the main process to fetch data
         window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
@@ -46,6 +48,7 @@ export default function SearchPage() {
               setData(fallbackData);
             }
           }
+          setLoadingState(false);
         });
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -53,6 +56,7 @@ export default function SearchPage() {
         if (isMounted) {
           setData(fallbackData);
         }
+        setLoadingState(false);
       }
     };
 
@@ -78,7 +82,7 @@ export default function SearchPage() {
     };
   }, [query, pageNumber, game]);
 
-  return data ? (
+  return data && !loadingState ? (
     data.data.routes.length > 0 ? (
       <StyledScrollbar>
         <div className="flex flex-col gap-2">

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { MAX_ROUTE_DISPLAY } from "@Config/limits";
 
 // Types
-import type { RouteDetail } from "@Types/Routes";
+import type { RouteDetail, RouteVanityResponse } from "@Types/Routes";
 import type DBFavorite from "../db/type/DBFavorite";
 import type DBRecent from "../db/type/DBRecent";
 
@@ -21,6 +21,7 @@ import Divider from "@Components/Divider";
 import FullCard from "@Components/cards/FullCard";
 import QuickCard from "@Components/cards/QuickCard";
 import FullCardSkeleton from "@Components/skeleton/FullCardSkeleton";
+import Spinner from "@Components/Spinner";
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -28,22 +29,57 @@ export default function MainPage() {
   const [featured, setFeatured] = useState<RouteDetail[] | null>(null);
   const [favorite, setFavorite] = useState<DBFavorite[] | null>(null);
   const [recent, setRecent] = useState<DBRecent[] | null>(null);
+  const [loading, setLoading] = useState(false);
 
   // Component id
   const id = useId();
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (loading) return;
 
-    const regex =
+    const queryString = query.trim();
+    if (queryString.length === 0) {
+      return;
+    }
+    const regexId =
       /^(?:https:\/\/(www\.)?qiqis-notebook\.com\/route\/)?([0-9a-fA-F]{24})$/;
-    const match = query.match(regex);
+    let match = queryString.match(regexId);
 
     // If it's a route id, launch the route
     if (match) {
       navigate(`/route/${match[2]}`);
     } else {
-      navigate(`/routes/search?query=${encodeURI(query)}`);
+      // If it's a route vanity, get route id and launch the route
+      const regexVanity =
+        /^(?:https:\/\/(www\.)?qiqis-notebook\.com\/r\/)([a-zA-Z0-9-_.]{1,50})$/;
+      match = queryString.match(regexVanity);
+      if (match) {
+        // Resolve vanity link
+        setLoading(true);
+        try {
+          // Send a message to the main process to fetch data
+          window.electron.ipcRenderer
+            .getData(`/gateway/vanity/route?vanity=${match[2]}`, id)
+            .then((resp) => {
+              if (resp && resp.data) {
+                const vanityId = (resp.data as RouteVanityResponse).data._id;
+                setLoading(false);
+                navigate(`/route/${vanityId}`);
+              } else {
+                setLoading(false);
+                toast.error("Route not found");
+              }
+            });
+        } catch (error) {
+          console.error("Error fetching data:", error.message);
+          toast.error(error);
+          setLoading(false);
+        }
+      } else {
+        // Route query
+        navigate(`/routes/search?query=${encodeURI(query)}`);
+      }
     }
   };
 
@@ -112,13 +148,22 @@ export default function MainPage() {
         <form className="w-full relative" onSubmit={onSubmit}>
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search title/id/url"
             className="input input-bordered w-full"
+            disabled={loading}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit" className="absolute inset-y-0 right-0 px-2">
-            <MagnifyingGlassIcon className="h-6 w-6" />
+          <button
+            type="submit"
+            disabled={loading}
+            className="absolute inset-y-0 right-0 px-2"
+          >
+            {loading ? (
+              <Spinner />
+            ) : (
+              <MagnifyingGlassIcon className="h-6 w-6" />
+            )}
           </button>
         </form>
       </div>
