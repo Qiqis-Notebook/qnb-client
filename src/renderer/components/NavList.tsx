@@ -2,6 +2,9 @@
 import { Fragment } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
+// Context
+import { useSettings } from "@Context/SettingsContext";
+
 // Utils
 import classNames from "classnames";
 
@@ -16,6 +19,7 @@ const iconStyle = {
 
 function NavList({ routes }: { routes: typeof RouteProp }) {
   const { pathname } = useLocation();
+  const { settings } = useSettings();
   return (
     <>
       {routes.map((object, i) => {
@@ -36,7 +40,13 @@ function NavList({ routes }: { routes: typeof RouteProp }) {
                     "flex h-8 items-center rounded px-2 font-normal",
                     {
                       "bg-primary text-primary-content":
-                        pathname === object.url,
+                        pathname === object.url &&
+                        !settings.mainWindow.reducedColor,
+                    },
+                    {
+                      "bg-base-300 text-base-content":
+                        pathname === object.url &&
+                        settings.mainWindow.reducedColor,
                     },
                     {
                       "hover:bg-base-100 hover:text-base-content":
@@ -78,7 +88,13 @@ function NavList({ routes }: { routes: typeof RouteProp }) {
                           "flex h-8 items-center rounded pl-8 font-light",
                           {
                             "bg-primary text-primary-content":
-                              pathname === item.url,
+                              pathname === item.url &&
+                              !settings.mainWindow.reducedColor,
+                          },
+                          {
+                            "bg-base-300 text-base-content":
+                              pathname === item.url &&
+                              settings.mainWindow.reducedColor,
                           },
                           {
                             "hover:bg-base-100 hover:text-base-content":

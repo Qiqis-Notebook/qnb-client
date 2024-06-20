@@ -163,8 +163,14 @@ const createWindow = (): void => {
 };
 
 function createOverlayWindow(url: string) {
-  const { saveSize, savePosition, opacity, borderless, compensateScaling } =
-    appSettings.routeWindow;
+  const {
+    alwaysOnTop,
+    saveSize,
+    savePosition,
+    opacity,
+    borderless,
+    compensateScaling,
+  } = appSettings.routeWindow;
   const overlayBounds = store.get("overlayBounds");
   const sf = compensateScaling
     ? overlayBounds
@@ -206,7 +212,9 @@ function createOverlayWindow(url: string) {
   overlayWindow.setFullScreenable(false);
   overlayWindow.removeMenu();
   overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true }); // Mac
-  overlayWindow.setAlwaysOnTop(true, "screen-saver");
+  if (alwaysOnTop) {
+    overlayWindow.setAlwaysOnTop(true, "screen-saver");
+  }
   overlayWindow.moveTop();
 
   // BUG: Borderless mode does not respect initialization parameters, requires the following to reset the window properties
