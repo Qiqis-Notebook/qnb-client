@@ -61,7 +61,7 @@ export default function SettingPage() {
             <div className="flex gap-1 justify-between items-center">
               <div>
                 <p>Remove accent colors on some components.</p>
-                <p>Affects "Featured" route border</p>
+                <p>Affects "Featured" route border and navigation menu.</p>
               </div>
               <input
                 type="checkbox"
@@ -84,6 +84,28 @@ export default function SettingPage() {
         <div className="flex flex-col gap-2">
           <h2 className="text-xl font-semibold">Route Window</h2>
           <div className="divider my-0" />
+          {/* Always on top */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg">Always on top</h2>
+            <div className="flex gap-1 justify-between items-center">
+              <p>Keep route window above other non-fullcreen applications.</p>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={settings.routeWindow.alwaysOnTop}
+                onChange={(e) =>
+                  updateSettings({
+                    ...settings,
+                    routeWindow: {
+                      ...settings.routeWindow,
+                      alwaysOnTop: e.target.checked,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+          <div className="divider h-1 my-0" />
           {/* Auto-start */}
           <div className="flex flex-col gap-2">
             <h2 className="text-lg">Auto-start</h2>

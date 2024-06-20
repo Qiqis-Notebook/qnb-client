@@ -11,6 +11,7 @@ export interface AppSettings {
     reducedColor: boolean;
   };
   routeWindow: {
+    alwaysOnTop: boolean;
     autoStart: boolean;
     opacity: number;
     borderless: boolean;

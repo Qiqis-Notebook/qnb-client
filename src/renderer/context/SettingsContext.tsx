@@ -24,6 +24,7 @@ const SettingsContext = createContext<SettingsContextProps | undefined>(
 export const defaultSettings: AppSettings = {
   mainWindow: { minimize: true, reducedColor: false },
   routeWindow: {
+    alwaysOnTop: true,
     autoStart: false,
     opacity: 1,
     borderless: false,
