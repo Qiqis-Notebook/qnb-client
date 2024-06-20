@@ -43,7 +43,10 @@ export default function FullCard({
       {/* Header */}
       <div className="flex flex-row gap-1">
         {route.verified && (
-          <CheckBadgeIcon className="h-6 w-6 text-green-400" title="Verified" />
+          <CheckBadgeIcon
+            className="h-6 w-6 text-green-400 shrink-0"
+            title="Verified"
+          />
         )}
         <Link
           to={`/route/${route._id}`}
