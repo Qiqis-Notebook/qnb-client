@@ -36,12 +36,16 @@ export default function SearchPage() {
   useEffect(() => {
     let isMounted = true;
     setData(null);
-    const fetchData = async (apiUrl: string, requestId: string) => {
+    const fetchData = async (
+      apiUrl: string,
+      requestId: string,
+      ttl: number
+    ) => {
       setLoadingState(true);
       try {
         // Send a message to the main process to fetch data
         window.electron.ipcRenderer
-          .getData<RoutesResponse>(apiUrl, requestId)
+          .getData<RoutesResponse>(apiUrl, requestId, ttl)
           .then((resp) => {
             if (isMounted) {
               if (resp.data) {
@@ -68,7 +72,8 @@ export default function SearchPage() {
             game ? `&game=${game}` : ""
           }&page=${pageNumber}`
         : `/gateway/routes?page=${pageNumber}${game ? `&game=${game}` : ""}`,
-      id
+      id,
+      query ? 0 : 300
     );
     navigate(
       `/routes/search?query=${encodeURI(query)}${

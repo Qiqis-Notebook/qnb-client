@@ -73,7 +73,7 @@ export function createOverlayWindow(url: string) {
       zoomFactor: scaleValue(sf),
     },
   });
-  overlayWindow.loadURL(url);
+  overlayWindow.loadURL(url, { userAgent: "QNB-Client" });
 
   // Other window setup
   overlayWindow.setFullScreenable(false);
