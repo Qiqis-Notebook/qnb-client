@@ -64,6 +64,7 @@ const config: ForgeConfig = {
           },
         ],
       },
+      port: 3005,
     }),
   ],
   publishers: [

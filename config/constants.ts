@@ -1,10 +1,12 @@
 const isDev = process.env.NODE_ENV === "development";
 
 // URLS
-const DEV_URL = "http://127.0.0.1:3001";
+const DEV_URL = "http://localhost.com";
 const PROD_URL = "https://www.qiqis-notebook.com";
 const BASE_URL = isDev ? DEV_URL : PROD_URL;
-const API_URL = BASE_URL + "/api";
+const API_URL = `${isDev ? "http" : "https"}://api.${
+  isDev ? "localhost.com" : "qiqis-notebook.com"
+}/v1`;
 export { isDev, DEV_URL, PROD_URL, BASE_URL, API_URL };
 
 // Constants

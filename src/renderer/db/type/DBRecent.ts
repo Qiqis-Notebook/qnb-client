@@ -8,7 +8,6 @@ export default interface DBRecent {
   title: string;
   description: string;
   values: string[];
-  public: boolean;
   verified: boolean;
   featured: boolean;
   createdAt: string;

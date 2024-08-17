@@ -21,10 +21,10 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    getData(
+    getData<T>(
       url: string,
       requestId: string
-    ): Promise<{ requestId: string; data?: any; error?: string }> {
+    ): Promise<{ requestId: string; data?: T; error?: string }> {
       return ipcRenderer.invoke("get-data", { url, requestId });
     },
     abortRequest(requestId: string) {

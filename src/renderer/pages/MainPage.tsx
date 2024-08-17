@@ -5,7 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { MAX_ROUTE_DISPLAY } from "@Config/limits";
 
 // Types
-import type { RouteDetail, RouteVanityResponse } from "@Types/Routes";
+import type {
+  RouteDetail,
+  RouteListResponse,
+  RouteVanityResponse,
+} from "@Types/Routes";
 import type DBFavorite from "../db/type/DBFavorite";
 import type DBRecent from "../db/type/DBRecent";
 
@@ -60,10 +64,13 @@ export default function MainPage() {
         try {
           // Send a message to the main process to fetch data
           window.electron.ipcRenderer
-            .getData(`/gateway/vanity/route?vanity=${match[2]}`, id)
+            .getData<RouteVanityResponse>(
+              `/gateway/vanity/route?vanity=${match[2]}`,
+              id
+            )
             .then((resp) => {
               if (resp && resp.data) {
-                const vanityId = (resp.data as RouteVanityResponse).data._id;
+                const vanityId = resp.data.data._id;
                 setLoading(false);
                 navigate(`/route/${vanityId}`);
               } else {
@@ -88,15 +95,17 @@ export default function MainPage() {
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
-          if (isMounted) {
-            if (resp && resp.data) {
-              setFeatured(resp.data.data.data as RouteDetail[]);
-            } else {
-              setFeatured([]);
+        window.electron.ipcRenderer
+          .getData<RouteListResponse>(apiUrl, requestId)
+          .then((resp) => {
+            if (isMounted) {
+              if (resp && resp.data) {
+                setFeatured(resp.data.data);
+              } else {
+                setFeatured([]);
+              }
             }
-          }
-        });
+          });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);

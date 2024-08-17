@@ -21,7 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 // Types
-import type { RouteDetail, RouteObject } from "@Types/Routes";
+import type { RouteDetail, RouteResponse } from "@Types/Routes";
 
 // Component
 import Linkify from "linkify-react";
@@ -34,7 +34,7 @@ import Timer from "@Components/Timer";
 import StyledScrollbar from "@Components/StyledScrollbar";
 
 export default function RoutePage() {
-  let { rid } = useParams();
+  const { rid } = useParams();
   const navigate = useNavigate();
 
   const { settings } = useSettings();
@@ -103,14 +103,16 @@ export default function RoutePage() {
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
-          if (isMounted) {
-            if (resp.data) {
-              setData(resp.data.data.data as RouteObject);
+        window.electron.ipcRenderer
+          .getData<RouteResponse>(apiUrl, requestId)
+          .then((resp) => {
+            if (isMounted) {
+              if (resp.data) {
+                setData(resp.data.data);
+              }
+              setLoading(false);
             }
-            setLoading(false);
-          }
-        });
+          });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);

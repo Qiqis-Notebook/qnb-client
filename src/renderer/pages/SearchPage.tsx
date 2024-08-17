@@ -40,16 +40,18 @@ export default function SearchPage() {
       setLoadingState(true);
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
-          if (isMounted) {
-            if (resp.data) {
-              setData(resp.data as RoutesResponse);
-            } else {
-              setData(fallbackData);
+        window.electron.ipcRenderer
+          .getData<RoutesResponse>(apiUrl, requestId)
+          .then((resp) => {
+            if (isMounted) {
+              if (resp.data) {
+                setData(resp.data);
+              } else {
+                setData(fallbackData);
+              }
             }
-          }
-          setLoadingState(false);
-        });
+            setLoadingState(false);
+          });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);
@@ -62,7 +64,7 @@ export default function SearchPage() {
 
     fetchData(
       query
-        ? `/gateway/routes/search?query=${encodeURI(query)}${
+        ? `/api/routes?query=${encodeURI(query)}${
             game ? `&game=${game}` : ""
           }&page=${pageNumber}`
         : `/gateway/routes?page=${pageNumber}${game ? `&game=${game}` : ""}`,

@@ -65,10 +65,13 @@ export default function RouteLayout() {
           setQuery("");
           // Send a message to the main process to fetch data
           window.electron.ipcRenderer
-            .getData(`/gateway/vanity/route?vanity=${match[2]}`, id)
+            .getData<RouteVanityResponse>(
+              `/gateway/vanity/route?vanity=${match[2]}`,
+              id
+            )
             .then((resp) => {
               if (resp && resp.data) {
-                const vanityId = (resp.data as RouteVanityResponse).data._id;
+                const vanityId = resp.data.data._id;
                 setLoading(false);
                 navigate(`/route/${vanityId}`);
               } else {

@@ -20,7 +20,7 @@ export default function translateToAccelerator(
     return null;
   }
 
-  let keys = [];
+  const keys = [];
   if (keybind.ctrl) {
     keys.push("CommandOrControl");
   }

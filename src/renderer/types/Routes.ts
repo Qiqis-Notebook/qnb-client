@@ -11,7 +11,6 @@ export interface RouteDetail {
   title: string;
   description: string;
   values: string[];
-  public: boolean;
   verified: boolean;
   featured: boolean;
   createdAt: string;
@@ -55,13 +54,12 @@ export interface Note {
 // Full route detail
 export interface RouteObject {
   _id: string;
-  author: Author;
+  author: Author | null;
   title: string;
   description: string;
   markers: (CustomMarker | number)[];
   notes: Note[];
   values: string[];
-  public: boolean;
   verified: boolean;
   featured: boolean;
   createdAt: string;
