@@ -1,4 +1,6 @@
 import { app, BrowserWindow } from "electron";
+
+// Windows
 import { createMainWindow } from "../windows/mainWindow";
 
 export function setupAppEvents() {

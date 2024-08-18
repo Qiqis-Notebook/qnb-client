@@ -9,7 +9,7 @@ import type DBFavorite from "../../db/type/DBFavorite";
 import type DBRecent from "../../db/type/DBRecent";
 
 // Assets
-import { CheckBadgeIcon, PlayIcon } from "@heroicons/react/24/outline";
+import { BadgeCheckIcon, PlayIcon } from "lucide-react";
 
 // Utils
 import Linkify from "linkify-react";
@@ -43,10 +43,7 @@ export default function FullCard({
       {/* Header */}
       <div className="flex flex-row gap-1">
         {route.verified && (
-          <CheckBadgeIcon
-            className="h-6 w-6 text-green-400 shrink-0"
-            title="Verified"
-          />
+          <BadgeCheckIcon className="h-6 w-6 text-green-400 shrink-0" />
         )}
         <Link
           to={`/route/${route._id}`}
@@ -56,9 +53,7 @@ export default function FullCard({
           {route.title}
         </Link>
         {showBadge && route.featured && (
-          <div className="badge badge-primary" title="Pinned to Home">
-            Featured
-          </div>
+          <div className="badge badge-primary">Featured</div>
         )}
       </div>
       <RouteAuthor route={route} />

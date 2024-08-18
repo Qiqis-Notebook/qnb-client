@@ -10,7 +10,7 @@ import {
 import type { RouteVanityResponse } from "@Types/Routes";
 
 // Assets
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { SearchIcon } from "lucide-react";
 
 // Utils
 import { toast } from "react-toastify";
@@ -163,11 +163,7 @@ export default function RouteLayout() {
             disabled={loading}
             className="absolute inset-y-0 right-0 px-2"
           >
-            {loading ? (
-              <Spinner />
-            ) : (
-              <MagnifyingGlassIcon className="h-6 w-6" />
-            )}
+            {loading ? <Spinner /> : <SearchIcon className="h-6 w-6" />}
           </button>
         </form>
       </div>

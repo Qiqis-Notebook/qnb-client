@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 // Assets
-import { BarsArrowUpIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PinIcon } from "lucide-react";
 
 // Config
 import { MAX_ROUTE_DISPLAY, ROUTES_PER_PAGE } from "@Config/limits";
@@ -95,7 +95,7 @@ export default function FavoritePage() {
                   }}
                   disabled={!item.pinned && favoriteCount >= MAX_ROUTE_DISPLAY}
                 >
-                  <BarsArrowUpIcon className="h-6 w-6" />
+                  <PinIcon className="h-6 w-6" />
                 </button>
               </FullCard>
             ))}

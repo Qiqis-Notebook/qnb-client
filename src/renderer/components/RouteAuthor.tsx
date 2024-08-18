@@ -4,7 +4,7 @@ import type DBRecent from "../db/type/DBRecent";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";
-import { CalendarDaysIcon, UserIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon, UserIcon } from "lucide-react";
 
 export default function RouteAuthor({
   route,
@@ -28,12 +28,12 @@ export default function RouteAuthor({
           }}
         />
       ) : (
-        <UserIcon className="h-full w-4" title="Author" />
+        <UserIcon className="h-full w-4" />
       )}
       <div className="ml-1 truncate">
         {route?.author?.displayName || "Traveler"}
       </div>
-      <CalendarDaysIcon className="ml-2 h-full w-4" title="Last updated" />
+      <CalendarDaysIcon className="ml-2 h-full w-4" />
       <div
         className="ml-1"
         title={`${date.toLocaleString()}`}

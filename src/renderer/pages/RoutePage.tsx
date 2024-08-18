@@ -14,11 +14,7 @@ import { recentTable } from "../db";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";
-import {
-  ArrowLeftIcon,
-  CheckBadgeIcon,
-  ClipboardDocumentIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, BadgeCheckIcon, CopyIcon } from "lucide-react";
 
 // Types
 import type { RouteDetail, RouteResponse } from "@Types/Routes";
@@ -212,10 +208,7 @@ export default function RoutePage() {
                 {/* Title */}
                 <div className="flex flex-row gap-1 w-full justify-center items-center">
                   {data.verified && (
-                    <CheckBadgeIcon
-                      className="h-8 w-8 text-green-400"
-                      title="Verified"
-                    />
+                    <BadgeCheckIcon className="h-8 w-8 text-green-400" />
                   )}
                   <div className="truncate text-2xl" title={data.title}>
                     {data.title}
@@ -253,7 +246,7 @@ export default function RoutePage() {
                     title="Copy link"
                     onClick={handleCopy}
                   >
-                    <ClipboardDocumentIcon className="h-6 w-6" />
+                    <CopyIcon className="h-6 w-6" />
                   </button>
                   <button
                     className="btn grow"

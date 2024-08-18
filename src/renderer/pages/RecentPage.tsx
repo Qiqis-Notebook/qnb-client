@@ -5,7 +5,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { recentTable } from "../db";
 
 // Asset
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "lucide-react";
 
 // Components
 import { useQuery } from "@Layouts/RouteLayout";

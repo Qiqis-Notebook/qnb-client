@@ -28,6 +28,7 @@ import RoutePage from "@Pages/RoutePage";
 
 // Components
 import { ToastContainer, toast } from "react-toastify";
+import { AuthProvider } from "@Context/AuthContext";
 
 export default function App() {
   // Connection status
@@ -54,34 +55,36 @@ export default function App() {
         themes={themes.map((item) => item.value)}
         defaultTheme="dark"
       >
-        <Router>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route path="/" element={<MainPage />} />
-              <Route path="routes" element={<RouteLayout />}>
-                <Route path="favorites" element={<FavoritePage />} />
-                <Route path="recent" element={<RecentPage />} />
-                <Route path="search" element={<SearchPage />} />
+        <AuthProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<MainLayout />}>
+                <Route path="/" element={<MainPage />} />
+                <Route path="routes" element={<RouteLayout />}>
+                  <Route path="favorites" element={<FavoritePage />} />
+                  <Route path="recent" element={<RecentPage />} />
+                  <Route path="search" element={<SearchPage />} />
+                </Route>
+                <Route path="setting" element={<SettingPage />} />
               </Route>
-              <Route path="setting" element={<SettingPage />} />
-            </Route>
-            <Route path="route" element={<FullPageLayout />}>
-              <Route path=":rid" element={<RoutePage />} />
-            </Route>
-          </Routes>
-        </Router>
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          limit={2}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+              <Route path="route" element={<FullPageLayout />}>
+                <Route path=":rid" element={<RoutePage />} />
+              </Route>
+            </Routes>
+          </Router>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            limit={2}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+        </AuthProvider>
       </ThemeProvider>
     </SettingsProvider>
   );

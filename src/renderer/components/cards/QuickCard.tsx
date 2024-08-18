@@ -8,7 +8,7 @@ import type DBFavorite from "../../db/type/DBFavorite";
 import type DBRecent from "../../db/type/DBRecent";
 
 // Assets
-import { CheckBadgeIcon } from "@heroicons/react/24/outline";
+import { BadgeCheckIcon } from "lucide-react";
 
 export default function QuickCard({
   route,
@@ -35,9 +35,7 @@ export default function QuickCard({
       onClick={() => navigate(`/route/${route._id}`)}
     >
       {/* Title */}
-      {route.verified && (
-        <CheckBadgeIcon className="h-6 w-6 text-green-400" title="Verified" />
-      )}
+      {route.verified && <BadgeCheckIcon className="h-6 w-6 text-green-400" />}
       <div className="grow truncate text-left" title={route.title}>
         {route.title}
       </div>

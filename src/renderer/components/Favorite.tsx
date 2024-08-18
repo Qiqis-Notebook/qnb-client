@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
 // Asset
-import { StarIcon } from "@heroicons/react/24/outline";
-import { StarIcon as StarIconFill } from "@heroicons/react/24/solid";
+import { StarIcon } from "lucide-react";
 
 // Types
 import type { RouteDetail, RouteObject } from "@Types/Routes";
@@ -52,11 +51,7 @@ export default function Favorite({
           });
       }}
     >
-      <StarIconFill
-        className={`h-6 w-6 fill-primary ${
-          loading ? "cursor-wait" : "cursor-pointer"
-        }`}
-      />
+      <StarIcon className="fill-primary text-primary" />
     </button>
   ) : (
     <button
@@ -80,9 +75,7 @@ export default function Favorite({
           });
       }}
     >
-      <StarIcon
-        className={`h-6 w-6 ${loading ? "cursor-wait" : "cursor-pointer"}`}
-      />
+      <StarIcon />
     </button>
   );
 }

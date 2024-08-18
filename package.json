@@ -53,16 +53,17 @@
     "update-electron-app": "^3.0.0"
   },
   "dependencies": {
-    "@heroicons/react": "^2.0.18",
     "axios": "^1.6.1",
     "classnames": "^2.3.2",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.7",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
+    "keytar": "^7.9.0",
     "linkify-react": "^4.1.2",
     "linkifyjs": "^4.1.2",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.428.0",
     "next-themes": "^0.2.1",
     "node-cache": "^5.1.2",
     "overlayscrollbars": "^2.4.4",

@@ -1,5 +1,8 @@
+// Assets
+import { CalendarDaysIcon } from "lucide-react";
+
+// Components
 import Divider from "@Components/Divider";
-import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 
 export default function FullCardSkeleton() {
   return (
@@ -10,7 +13,7 @@ export default function FullCardSkeleton() {
           <div className="h-6 w-6 " />
         </div>
         <div className="ml-1 w-24 h-full skeleton" />
-        <CalendarDaysIcon className="ml-2 h-full w-4" title="Last updated" />
+        <CalendarDaysIcon className="ml-2 h-full w-4" />
         <div className="ml-1 w-24 h-full skeleton" />
       </div>
       <Divider />

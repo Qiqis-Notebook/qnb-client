@@ -18,7 +18,7 @@ import { favoritesTable, recentTable } from "../db";
 import { toast } from "react-toastify";
 
 // Assets
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { SearchIcon } from "lucide-react";
 
 // Components
 import Divider from "@Components/Divider";
@@ -168,11 +168,7 @@ export default function MainPage() {
             disabled={loading}
             className="absolute inset-y-0 right-0 px-2"
           >
-            {loading ? (
-              <Spinner />
-            ) : (
-              <MagnifyingGlassIcon className="h-6 w-6" />
-            )}
+            {loading ? <Spinner /> : <SearchIcon className="h-6 w-6" />}
           </button>
         </form>
       </div>

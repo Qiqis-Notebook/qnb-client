@@ -12,6 +12,9 @@ import { API_URL } from "@Config/constants";
 // Windows
 import { launchWindow, closeWindow } from "../windows/overlayWindow";
 
+// Authentication
+import { checkSession, getUser, logout } from "../utils/authentication";
+
 // Cache
 import NodeCache from "node-cache";
 const fetchCache = new NodeCache({ checkperiod: 600 });
@@ -96,5 +99,17 @@ export function initializeIPCHandlers() {
 
   ipcMain.on("close-window", async () => {
     closeWindow();
+  });
+
+  ipcMain.handle("session", async () => {
+    const user = getUser();
+    if (user) return user;
+    return await checkSession();
+  });
+
+  ipcMain.handle("logout", async () => {
+    const user = getUser();
+    if (!user) return false;
+    return await logout();
   });
 }

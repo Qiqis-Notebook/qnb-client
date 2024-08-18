@@ -1,5 +1,8 @@
 const isDev = process.env.NODE_ENV === "development";
 
+// Custom Protocol
+export const CUSTOM_PROTOCOL = "qnb-client";
+
 // URLS
 const DEV_URL = "http://localhost.com";
 const PROD_URL = "https://www.qiqis-notebook.com";
@@ -7,7 +10,8 @@ const BASE_URL = isDev ? DEV_URL : PROD_URL;
 const API_URL = `${isDev ? "http" : "https"}://api.${
   isDev ? "localhost.com" : "qiqis-notebook.com"
 }/v1`;
-export { isDev, DEV_URL, PROD_URL, BASE_URL, API_URL };
+const LOGIN_URL = `${API_URL}/auth/app/login/discord`;
+export { isDev, DEV_URL, PROD_URL, BASE_URL, API_URL, LOGIN_URL };
 
 // Constants
 const MAIN_WIDTH = 1216;
