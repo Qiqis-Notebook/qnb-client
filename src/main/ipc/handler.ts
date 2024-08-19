@@ -13,11 +13,16 @@ import { API_URL } from "@Config/constants";
 import { launchWindow, closeWindow } from "../windows/overlayWindow";
 
 // Authentication
-import { checkSession, getUser, logout } from "../utils/authentication";
+import {
+  checkSession,
+  getToken,
+  getUser,
+  logout,
+} from "../utils/authentication";
 
 // Cache
-import NodeCache from "node-cache";
-const fetchCache = new NodeCache({ checkperiod: 600 });
+import { Cache } from "../lib/Cache";
+const cache = new Cache();
 
 // Utils
 import { createHashString } from "../utils/createHashString";
@@ -38,17 +43,42 @@ export function initializeIPCHandlers() {
       {
         url,
         requestId,
-        ttl = 3600,
-      }: { url: string; requestId: string; ttl?: number }
+        options,
+      }: {
+        url: string;
+        requestId: string;
+        options?: {
+          ttl?: number;
+          tags?: string[];
+          method?: "GET" | "POST" | "DELETE";
+          credentials?: boolean;
+        };
+      }
     ) => {
       try {
+        // URL
+        const urlObj = new URL(`${API_URL}${url}`);
+
+        // Options
+        const ttl = options?.ttl ?? 3600;
+        const tags = options?.tags;
+        const method = options?.method ?? "GET";
+        const credentials = options?.credentials ?? false;
+
+        // Credentials
+        let token = credentials ? getToken() : null;
+        if (credentials) {
+          if (!token) return { requestId, error: "No credentials" };
+          urlObj.searchParams.set("token", token);
+        }
+
         // Hash the request string
         const urlHash = createHashString(url);
 
         // Check cache
-        const cache = ttl ? fetchCache.get(urlHash) : null;
-        if (cache) {
-          return { requestId, data: cache };
+        const data = ttl ? cache.get(urlHash) : null;
+        if (data) {
+          return { requestId, data };
         }
 
         // Cancel any existing request with the same ID before making a new one
@@ -66,13 +96,25 @@ export function initializeIPCHandlers() {
           adapter: "http",
         };
 
-        const response = await axios.get(`${API_URL}${url}`, config);
+        // POST
+        if (method === "POST") {
+          const response = await axios.post(urlObj.toString(), config);
+          return { requestId, data: response.data };
+        }
+
+        // DELETE
+        if (method === "DELETE") {
+          const response = await axios.delete(urlObj.toString(), config);
+          return { requestId, data: response.data };
+        }
+
+        // GET
+        const response = await axios.get(urlObj.toString(), config);
 
         // Save to cache
         if (ttl && response.status === 200) {
-          fetchCache.set(urlHash, response.data, ttl);
+          cache.set(urlHash, response.data, { ttl, tags: tags });
         }
-
         return { requestId, data: response.data };
       } catch (error) {
         console.error(error.message);
@@ -92,6 +134,20 @@ export function initializeIPCHandlers() {
       requestCancelTokens.delete(requestId);
     }
   });
+
+  ipcMain.on(
+    "invalidate",
+    async (event, { url, tags }: { url?: string; tags?: string[] }) => {
+      if (url) {
+        // Hash the request string
+        const urlHash = createHashString(url);
+        cache.invalidateByUrlHash(urlHash);
+      }
+      if (tags) {
+        cache.invalidateByTag(tags);
+      }
+    }
+  );
 
   ipcMain.on("open-window", async (event, url) => {
     launchWindow(url);

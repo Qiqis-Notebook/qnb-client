@@ -45,7 +45,7 @@ export default function SearchPage() {
       try {
         // Send a message to the main process to fetch data
         window.electron.ipcRenderer
-          .getData<RoutesResponse>(apiUrl, requestId, ttl)
+          .getData<RoutesResponse>(apiUrl, requestId, { ttl })
           .then((resp) => {
             if (isMounted) {
               if (resp.data) {
@@ -92,18 +92,20 @@ export default function SearchPage() {
   return data && !loadingState ? (
     data.data.routes.length > 0 ? (
       <StyledScrollbar>
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
           {data.data.routes.map((item, idx) => (
             <FullCard route={item} key={`fav-${idx}`} showBadge />
           ))}
-          <Pagination
-            totalPages={data.data.totalPages}
-            currentPage={pageNumber}
-            onPageChange={(pageNum) => {
-              setPage(pageNum);
-              setData(null);
-            }}
-          />
+          <div className="col-span-full">
+            <Pagination
+              totalPages={data.data.totalPages}
+              currentPage={pageNumber}
+              onPageChange={(pageNum) => {
+                setPage(pageNum);
+                setData(null);
+              }}
+            />
+          </div>
         </div>
       </StyledScrollbar>
     ) : (

@@ -34,7 +34,7 @@ export default function FullCard({
 
   return (
     <div
-      className={`w-full h-full rounded-lg bg-base-200 p-2 flex gap-1 flex-col border ${
+      className={`w-full h-full rounded-lg bg-base-200 p-2 flex gap-1 col-span-1 flex-col border ${
         route.featured && !settings.mainWindow.reducedColor
           ? "border-primary"
           : "border-transparent"
@@ -53,7 +53,15 @@ export default function FullCard({
           {route.title}
         </Link>
         {showBadge && route.featured && (
-          <div className="badge badge-primary">Featured</div>
+          <div
+            className={`badge ${
+              settings.mainWindow.reducedColor
+                ? "badge-outline"
+                : "badge-primary"
+            }`}
+          >
+            Featured
+          </div>
         )}
       </div>
       <RouteAuthor route={route} />

@@ -70,6 +70,11 @@ export function getUser() {
   return user;
 }
 
+export function getToken() {
+  if (!session) return null;
+  return session.id;
+}
+
 export async function logout() {
   if (!session) return false;
   try {

@@ -40,6 +40,13 @@ export default function AuthButton() {
         { "justify-normal": status !== "loading" }
       )}
       onClick={handleSignOut}
+      title={
+        status === "loading"
+          ? ""
+          : status === "authenticated"
+          ? "Logout"
+          : "Login"
+      }
     >
       {status === "loading" && <Spinner />}
       {status === "authenticated" && (

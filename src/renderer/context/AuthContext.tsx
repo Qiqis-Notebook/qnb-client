@@ -4,6 +4,8 @@ import {
   useContext,
   useMemo,
   useReducer,
+  useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 
@@ -61,6 +63,40 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const [controller, dispatch] = useReducer(reducer, initialState);
 
   const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
+
+  const checkSession = useCallback(async () => {
+    try {
+      const payload = await window.electron.ipcRenderer.session();
+      return payload;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    setSession(dispatch, { user: null, status: "loading" });
+
+    // Listen to auth events
+    window.electron.ipcRenderer.on("auth", (arg: AuthUser | null) => {
+      if (!mounted || !arg) return;
+      setSession(dispatch, { user: arg, status: "authenticated" });
+    });
+
+    // Trigger session check
+    checkSession().then((resp) => {
+      if (!mounted) return;
+      if (resp) {
+        setSession(dispatch, { user: resp, status: "authenticated" });
+      } else {
+        setSession(dispatch, { user: null, status: "unauthenticated" });
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [checkSession, setSession, dispatch]);
 
   return (
     <Auth.Provider value={value as [DefaultValues, React.Dispatch<Action>]}>

@@ -240,7 +240,7 @@ export default function RoutePage() {
                 </StyledScrollbar>
                 {/* Actions */}
                 <div className="flex flex-row gap-2 w-full">
-                  <Favorite routeDetail={data} />
+                  <Favorite route={data} />
                   <button
                     className="btn btn-square"
                     title="Copy link"

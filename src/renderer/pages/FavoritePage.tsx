@@ -1,117 +1,296 @@
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useEffect,
+  useState,
+  useCallback,
+  useId,
+  Fragment,
+  useRef,
+} from "react";
+
+// Types
+import type { RoutesResponse } from "@Types/Routes";
 
 // Assets
-import { TrashIcon, PinIcon } from "lucide-react";
+import { RefreshCwIcon } from "lucide-react";
 
 // Config
-import { MAX_ROUTE_DISPLAY, ROUTES_PER_PAGE } from "@Config/limits";
+import { useSettings } from "@Context/SettingsContext";
+import { ROUTES_PER_PAGE } from "@Config/limits";
+
+// Authentication
+import { useAuth } from "../lib/useAuth";
 
 // Utils
 import { useLiveQuery } from "dexie-react-hooks";
 import { favoritesTable } from "../db";
 import { toast } from "react-toastify";
+import classNames from "classnames";
 
 // Components
-import { useQuery } from "@Layouts/RouteLayout";
-import FullCard from "@Components/cards/FullCard";
 import Pagination from "@Components/Pagination";
 import StyledScrollbar from "@Components/StyledScrollbar";
+import TimeoutButton from "@Components/TimeoutButton";
+import LocalFavoriteCard from "@Components/cards/Favorites/Local";
+import AccountFavoriteCard from "@Components/cards/Favorites/Account";
 
 export default function FavoritePage() {
-  const { query, page } = useQuery();
-  const [pageNumber, setPage] = page;
-  const favorites = useLiveQuery(() => favoritesTable.toArray());
+  // Component id
+  const id = useId();
 
+  const { settings } = useSettings();
+  const { session } = useAuth();
+  const { status } = session;
+  const statusRef = useRef(status);
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
+
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [local, setLocal] = useState(
+    status === "unauthenticated" ? true : false
+  );
+  useEffect(() => {
+    switch (status) {
+      case "authenticated":
+        setLocal(false);
+        break;
+      case "unauthenticated":
+        setLocal(true);
+        break;
+      default:
+        setLocal(true);
+        break;
+    }
+  }, [status]);
+
+  // Local data
+  const favorites = useLiveQuery(() => favoritesTable.toArray());
   const favoriteCount = useMemo(
     () => favorites?.filter((item) => item.pinned === true).length,
     [favorites]
   );
-  const sortedFavorites = useMemo(() => {
-    const sortedFavorites = favorites?.sort((a, b) => {
+  const localData = useMemo(() => {
+    const data = favorites?.sort((a, b) => {
       if (a.pinned === b.pinned) {
         return b.added.getTime() - a.added.getTime();
       }
       return a.pinned ? -1 : 1;
     });
-    return sortedFavorites?.slice(0, ROUTES_PER_PAGE);
+    return data?.slice(0, ROUTES_PER_PAGE);
   }, [favorites]);
-  const displayFavorites = useMemo(
+
+  // Favorite routes
+  const [fetching, setFetching] = useState(false);
+  const [favoritesData, setFavoritesData] = useState<RoutesResponse | null>(
+    null
+  );
+  const getFavoriteRoutes = useCallback(
+    async (page: number) => {
+      try {
+        // Send a message to the main process to fetch data
+        const payload =
+          await window.electron.ipcRenderer.getData<RoutesResponse>(
+            `/api/app/favorites/user?page=${page}`,
+            id,
+            { credentials: true, tags: ["Favorites"] }
+          );
+        if (!payload.data) {
+          return null;
+        }
+        return payload.data;
+      } catch (error) {
+        return null;
+      }
+    },
+    [id]
+  );
+  useEffect(() => {
+    if (local || statusRef.current !== "authenticated") return;
+    setFetching(true);
+    getFavoriteRoutes(page)
+      .then((resp) => {
+        setFavoritesData(resp);
+      })
+      .catch(() => {
+        toast.error("Failed to get favorites");
+      })
+      .finally(() => {
+        setFetching(false);
+      });
+  }, [local, page, statusRef, getFavoriteRoutes]);
+
+  // Total pages
+  const pages = useMemo(
     () =>
-      sortedFavorites?.filter(
-        (item) =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.description.toLowerCase().includes(query.toLowerCase())
-      ),
-    [sortedFavorites, query]
+      local
+        ? localData
+          ? Math.ceil(localData.length / ROUTES_PER_PAGE)
+          : 1
+        : favoritesData
+        ? favoritesData.data.totalPages
+        : 1,
+    [local, localData, favoritesData]
   );
 
-  const updatePinnedStatus = async (_id: string, newPinnedStatus: boolean) => {
-    if (newPinnedStatus && favoriteCount >= MAX_ROUTE_DISPLAY) {
-      toast.warn("Pinned limit reached");
-      return;
-    }
-    try {
-      await favoritesTable.update(_id, { pinned: newPinnedStatus });
-    } catch (error) {
-      console.error("Error updating pinned status:", error);
-    }
-  };
-
-  const [loading, setLoading] = useState(false);
-  async function removeFavorite(_id: string) {
+  // Refresh
+  async function refresh() {
     if (loading) return;
     setLoading(true);
-    await favoritesTable.delete(_id).finally(() => setLoading(false));
+    try {
+      // Invalidate favorites
+      window.electron.ipcRenderer.invalidate({ tags: ["Favorites"] });
+
+      const payload = await getFavoriteRoutes(1);
+      setFavoritesData(payload);
+      setPage(1);
+    } catch (error) {
+      toast.error("Failed to get favorites");
+    }
+    setLoading(false);
   }
+
   return (
-    displayFavorites &&
-    (displayFavorites.length > 0 ? (
-      <StyledScrollbar>
-        <div className="flex flex-col gap-2">
-          {displayFavorites
-            .slice(
-              (pageNumber - 1) * ROUTES_PER_PAGE,
-              pageNumber * ROUTES_PER_PAGE
-            )
-            .map((item, idx) => (
-              <FullCard route={item} key={`fav-${idx}`} showBadge>
-                <button
-                  className="btn-square btn-sm btn h-10 w-10 btn-ghost"
-                  title="Delete from Recent"
-                  onClick={() => {
-                    removeFavorite(item._id);
-                  }}
-                  disabled={loading}
-                >
-                  <TrashIcon className="h-6 w-6" />
-                </button>
-                <button
-                  className={`btn-square btn-sm btn h-10 w-10 ${
-                    item.pinned ? "btn-primary" : "btn-ghost"
-                  }`}
-                  title={item.pinned ? "Unpin from top" : "Pin to top"}
-                  onClick={() => {
-                    updatePinnedStatus(item._id, !item.pinned);
-                  }}
-                  disabled={!item.pinned && favoriteCount >= MAX_ROUTE_DISPLAY}
-                >
-                  <PinIcon className="h-6 w-6" />
-                </button>
-              </FullCard>
-            ))}
+    <div className="flex flex-col gap-2 grow p-2">
+      <div className="inline-flex justify-between w-full items-center">
+        <div role="tablist" className="tabs-boxed tabs w-64 grid-cols-2">
+          <button
+            role="tab"
+            className={classNames(
+              "tab col-span-1",
+              {
+                "bg-primary":
+                  local === false && !settings.mainWindow.reducedColor,
+              },
+              {
+                "bg-base-300":
+                  local === false && settings.mainWindow.reducedColor,
+              }
+            )}
+            onClick={() => setLocal(false)}
+            disabled={status !== "authenticated" || loading}
+          >
+            Account
+          </button>
+          <button
+            role="tab"
+            className={classNames(
+              "tab col-span-1",
+              {
+                "bg-primary":
+                  local === true && !settings.mainWindow.reducedColor,
+              },
+              {
+                "bg-base-300":
+                  local === true && settings.mainWindow.reducedColor,
+              }
+            )}
+            onClick={() => setLocal(true)}
+            disabled={loading}
+          >
+            Local
+          </button>
+        </div>
+        {!local && (
+          <TimeoutButton
+            className="btn btn-square btn-sm"
+            timeOut={5}
+            onClick={refresh}
+            disabled={loading}
+          >
+            <RefreshCwIcon />
+          </TimeoutButton>
+        )}
+      </div>
+      {status !== "loading" && (
+        <StyledScrollbar>
+          {local ? (
+            <Fragment>
+              {localData ? (
+                <Fragment>
+                  {localData.length > 0 ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                      {localData
+                        .slice(
+                          (page - 1) * ROUTES_PER_PAGE,
+                          page * ROUTES_PER_PAGE
+                        )
+                        .map((item, idx) => (
+                          <LocalFavoriteCard
+                            key={`local-route-${idx}-${item._id}`}
+                            route={item}
+                            allowPin={favoriteCount < 5}
+                          />
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="divider mb-4 mt-6">No result</div>
+                  )}
+                </Fragment>
+              ) : (
+                <div className="flex justify-center">
+                  <span className="loading loading-dots loading-lg"></span>
+                </div>
+              )}
+            </Fragment>
+          ) : (
+            <Fragment>
+              {fetching && (
+                <div className="flex justify-center">
+                  <span className="loading loading-dots loading-lg"></span>
+                </div>
+              )}
+              {!fetching &&
+                favoritesData &&
+                favoritesData.data.totalDocuments > 0 && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                    {favoritesData.data.routes
+                      .slice(
+                        (page - 1) * ROUTES_PER_PAGE,
+                        page * ROUTES_PER_PAGE
+                      )
+                      .map((item, idx) => (
+                        <AccountFavoriteCard
+                          key={`cloud-route-${idx}-${item._id}`}
+                          allowPin={favoriteCount < 5}
+                          route={item}
+                          onDelete={(routeId) => {
+                            setFavoritesData((prev) => ({
+                              ...prev,
+                              data: {
+                                ...prev.data,
+                                routes: prev.data.routes.filter(
+                                  (item) => item._id !== routeId
+                                ),
+                                totalDocuments: prev.data.totalDocuments - 1,
+                                totalPages: prev.data.totalPages - 1,
+                              },
+                            }));
+                          }}
+                        />
+                      ))}
+                  </div>
+                )}
+              {!fetching &&
+                (!favoritesData ||
+                  favoritesData?.data.totalDocuments === 0) && (
+                  <div className="divider mb-4 mt-6">
+                    {favoritesData ? "No result" : "Error"}
+                  </div>
+                )}
+            </Fragment>
+          )}
           <Pagination
-            totalPages={displayFavorites.length / ROUTES_PER_PAGE}
-            currentPage={pageNumber}
+            totalPages={pages}
+            currentPage={page}
             onPageChange={(pageNum) => {
+              if (loading) return;
               setPage(pageNum);
             }}
           />
-        </div>
-      </StyledScrollbar>
-    ) : (
-      <div className="w-full rounded-lg bg-base-200 p-2 text-center">
-        <p>No routes</p>
-      </div>
-    ))
+        </StyledScrollbar>
+      )}
+    </div>
   );
 }

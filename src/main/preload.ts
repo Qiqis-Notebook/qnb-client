@@ -28,9 +28,17 @@ const electronHandler = {
     getData<T>(
       url: string,
       requestId: string,
-      ttl?: number // Cache TTL (seconds)
+      options?: {
+        ttl?: number; // Cache TTL (seconds)
+        tags?: string[]; // Cache tag
+        method?: "GET" | "POST" | "DELETE";
+        credentials?: boolean;
+      }
     ): Promise<{ requestId: string; data?: T; error?: string }> {
-      return ipcRenderer.invoke("get-data", { url, requestId, ttl });
+      return ipcRenderer.invoke("get-data", { url, requestId, options });
+    },
+    invalidate({ url, tags }: { url?: string; tags?: string[] }) {
+      ipcRenderer.send("invalidate", { url, tags });
     },
     abortRequest(requestId: string) {
       ipcRenderer.send("abort-request", requestId);

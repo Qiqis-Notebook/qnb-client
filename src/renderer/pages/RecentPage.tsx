@@ -37,7 +37,7 @@ export default function FavoritePage() {
     displayRecent &&
     (displayRecent.length > 0 ? (
       <StyledScrollbar>
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
           {displayRecent.map((item, idx) => (
             <FullCard route={item} key={`fav-${idx}`} showBadge>
               <button

@@ -7,7 +7,7 @@ export interface Author {
 // Route details, no markers or notes
 export interface RouteDetail {
   _id: string;
-  author: Author;
+  author: Author | null;
   title: string;
   description: string;
   values: string[];

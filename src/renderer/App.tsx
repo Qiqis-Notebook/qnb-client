@@ -61,10 +61,10 @@ export default function App() {
               <Route path="/" element={<MainLayout />}>
                 <Route path="/" element={<MainPage />} />
                 <Route path="routes" element={<RouteLayout />}>
-                  <Route path="favorites" element={<FavoritePage />} />
                   <Route path="recent" element={<RecentPage />} />
                   <Route path="search" element={<SearchPage />} />
                 </Route>
+                <Route path="routes/favorites" element={<FavoritePage />} />
                 <Route path="setting" element={<SettingPage />} />
               </Route>
               <Route path="route" element={<FullPageLayout />}>
@@ -73,7 +73,7 @@ export default function App() {
             </Routes>
           </Router>
           <ToastContainer
-            position="bottom-left"
+            position="bottom-right"
             autoClose={5000}
             limit={2}
             hideProgressBar={false}
