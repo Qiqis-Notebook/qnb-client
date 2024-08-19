@@ -94,7 +94,7 @@ export default function RouteLayout() {
   return (
     <div className="flex flex-col gap-2 grow p-2">
       {/* Game selector */}
-      <div className="flex flex-row gap-2 p-2">
+      <div className="flex flex-row gap-2">
         <div className="form-control">
           <label className="label cursor-pointer">
             <input

@@ -96,6 +96,8 @@ export default function RoutePage() {
   // Check route exist
   useEffect(() => {
     let isMounted = true;
+    setLoading(true);
+    setData(null);
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
@@ -138,9 +140,10 @@ export default function RoutePage() {
 
     return () => {
       window.electron.ipcRenderer.abortRequest(id);
+      window.electron.ipcRenderer.closeWindow();
       isMounted = false;
     };
-  }, []);
+  }, [rid]);
 
   // Action on data
   useEffect(() => {
@@ -187,7 +190,7 @@ export default function RoutePage() {
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
           {/* Timer */}
-          {data && <Timer start={startTimer} />}
+          {data && <Timer start={startTimer} key={rid} />}
         </div>
         {loading ? (
           <div className="w-full grow justify-center items-center flex">

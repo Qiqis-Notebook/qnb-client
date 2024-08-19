@@ -29,6 +29,7 @@ import RoutePage from "@Pages/RoutePage";
 // Components
 import { ToastContainer, toast } from "react-toastify";
 import { AuthProvider } from "@Context/AuthContext";
+import EventHandler from "@Components/EventHandler";
 
 export default function App() {
   // Connection status
@@ -71,6 +72,7 @@ export default function App() {
                 <Route path=":rid" element={<RoutePage />} />
               </Route>
             </Routes>
+            <EventHandler />
           </Router>
           <ToastContainer
             position="bottom-right"

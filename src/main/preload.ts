@@ -9,7 +9,7 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 import type { AppSettings } from "@Types/AppSettings";
 import type { AuthUser } from "./utils/authentication";
 
-export type Channels = "window-event" | "auth";
+export type Channels = "window-event" | "auth" | "route";
 
 const electronHandler = {
   ipcRenderer: {

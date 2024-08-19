@@ -9,26 +9,22 @@ import { mainWindow } from "../windows/mainWindow";
 
 export default function handleDeepLinks(url: string) {
   const urlObj = new URL(url);
-  const { hostname, pathname, searchParams } = urlObj;
-  if (isAuthCallbackUrl(url)) {
-    handleAuthCallback(url);
-  } else {
-    // switch (urlObj.hostname) {
-    //   case "value":
-    //     break;
-    //   default:
-    //     break;
-    // }
-  }
-}
+  const { hostname, protocol } = urlObj;
 
-function isAuthCallbackUrl(url: string): boolean {
-  const urlObj = new URL(url);
-  // Check if the protocol and path match the expected format
-  return (
-    urlObj.protocol === `${CUSTOM_PROTOCOL}:` &&
-    urlObj.hostname === "auth-callback"
-  );
+  // Check custom protocol
+  if (protocol !== `${CUSTOM_PROTOCOL}:`) return;
+
+  switch (hostname) {
+    case "auth-callback":
+      handleAuthCallback(url);
+      break;
+    case "route-redirect":
+      handleRouteCallback(url);
+      break;
+    default:
+      console.error("No matching deep link handler");
+      break;
+  }
 }
 
 async function handleAuthCallback(url: string) {
@@ -39,6 +35,21 @@ async function handleAuthCallback(url: string) {
     const user = await checkSession(token);
     if (mainWindow) {
       mainWindow.webContents.send("auth", user);
+    }
+  }
+}
+
+async function handleRouteCallback(url: string) {
+  const urlObj = new URL(url);
+  const id = urlObj.searchParams.get("id");
+  if (urlObj.pathname === "/route" && id) {
+    // Check id format
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      return;
+    }
+    // Launch route
+    if (mainWindow) {
+      mainWindow.webContents.send("route", id);
     }
   }
 }

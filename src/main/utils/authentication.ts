@@ -8,16 +8,9 @@ export interface AuthUser {
   image: string;
   authAvatar: string;
 }
-interface Token {
-  provider: string;
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: Date;
-}
 interface AuthSession {
   id: string;
   userId: string;
-  token: Token;
   created_at: Date;
   expiresAt: Date;
 }
