@@ -27,7 +27,7 @@ export default function QuickCard({
   const currentDate = new Date();
   return (
     <button
-      className={`btn w-full rounded-lg bg-base-200 p-2 flex flex-row flex-nowrap justify-center items-left ${
+      className={`btn no-animation w-full rounded-lg bg-base-200 p-2 flex flex-row flex-nowrap justify-center items-left ${
         route.featured &&
         !settings.mainWindow.reducedColor &&
         "border border-primary"

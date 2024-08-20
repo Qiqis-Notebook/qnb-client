@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 
 // Utils
 import { useLiveQuery } from "dexie-react-hooks";
@@ -45,37 +45,54 @@ export default function FavoritePage() {
     await recentTable.delete(_id).finally(() => setLoading(false));
   }
 
+  async function clearRecent() {
+    if (loading) return;
+    setLoading(true);
+    await recentTable.clear().finally(() => setLoading(false));
+  }
+
   return displayRecent ? (
     displayRecent.length > 0 ? (
-      <StyledScrollbar>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-          {displayRecent
-            .slice((page - 1) * ROUTES_PER_PAGE, page * ROUTES_PER_PAGE)
-            .map((item, idx) => (
-              <FullCard route={item} key={`fav-${idx}`} showBadge>
-                <button
-                  className="btn-square btn-sm btn h-10 w-10 btn-ghost"
-                  title="Delete from Recent"
-                  onClick={() => {
-                    removeRecent(item._id);
-                  }}
-                  disabled={loading}
-                >
-                  <TrashIcon className="h-6 w-6" />
-                </button>
-              </FullCard>
-            ))}
-          <div className="col-span-full">
-            <Pagination
-              totalPages={Math.ceil(displayRecent.length / ROUTES_PER_PAGE)}
-              currentPage={page}
-              onPageChange={(pageNum) => {
-                setPage(pageNum);
-              }}
-            />
-          </div>
+      <Fragment>
+        <div>
+          <button
+            onClick={clearRecent}
+            disabled={loading}
+            className="btn btn-sm btn-error no-animation"
+          >
+            Clear
+          </button>
         </div>
-      </StyledScrollbar>
+        <StyledScrollbar>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            {displayRecent
+              .slice((page - 1) * ROUTES_PER_PAGE, page * ROUTES_PER_PAGE)
+              .map((item, idx) => (
+                <FullCard route={item} key={`fav-${idx}`} showBadge>
+                  <button
+                    className="btn-square btn-sm btn h-10 w-10 btn-ghost"
+                    title="Delete from Recent"
+                    onClick={() => {
+                      removeRecent(item._id);
+                    }}
+                    disabled={loading}
+                  >
+                    <TrashIcon className="h-6 w-6" />
+                  </button>
+                </FullCard>
+              ))}
+            <div className="col-span-full">
+              <Pagination
+                totalPages={Math.ceil(displayRecent.length / ROUTES_PER_PAGE)}
+                currentPage={page}
+                onPageChange={(pageNum) => {
+                  setPage(pageNum);
+                }}
+              />
+            </div>
+          </div>
+        </StyledScrollbar>
+      </Fragment>
     ) : (
       <div className="w-full rounded-lg bg-base-200 p-2 text-center">
         <p>No routes</p>

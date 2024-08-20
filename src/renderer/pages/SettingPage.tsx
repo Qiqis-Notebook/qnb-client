@@ -61,10 +61,7 @@ export default function SettingPage() {
             <div className="flex flex-col gap-2">
               <h2 className="text-lg">Reduced color</h2>
               <div className="flex gap-1 justify-between items-center">
-                <div>
-                  <p>Remove accent colors on some components.</p>
-                  <p>Affects "Featured" route border and navigation menu.</p>
-                </div>
+                <p>Remove accent colors on some components.</p>
                 <input
                   type="checkbox"
                   className="toggle"
