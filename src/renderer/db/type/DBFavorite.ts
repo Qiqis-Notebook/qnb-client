@@ -10,6 +10,7 @@ export default interface DBFavorite {
   values: string[];
   verified: boolean;
   featured: boolean;
+  game: "Genshin" | "WuWa";
   createdAt: string;
   updatedAt: string;
   added: Date;

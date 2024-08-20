@@ -15,6 +15,9 @@ export const useAuth = () => {
     try {
       const success = await window.electron.ipcRenderer.logout();
       if (success) {
+        window.electron.ipcRenderer.invalidate({
+          tags: ["Favorites", "Favorite"],
+        });
         setSession(dispatch, { user: null, status: "unauthenticated" });
       } else {
         toast.error("Failed to sign out");

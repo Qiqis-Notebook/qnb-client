@@ -34,7 +34,7 @@ export default function FullCard({
 
   return (
     <div
-      className={`w-full h-full rounded-lg bg-base-200 p-2 flex gap-1 col-span-1 flex-col border ${
+      className={`w-full h-full rounded-lg bg-base-200 p-2 flex gap-1 col-span-1 @container flex-col border ${
         route.featured && !settings.mainWindow.reducedColor
           ? "border-primary"
           : "border-transparent"

@@ -2,7 +2,7 @@
 import { CUSTOM_PROTOCOL } from "@Config/constants";
 
 // Authentication
-import { checkSession } from "../utils/authentication";
+import { checkSession, getUser } from "../utils/authentication";
 
 // Windows
 import { mainWindow } from "../windows/mainWindow";
@@ -28,6 +28,11 @@ export default function handleDeepLinks(url: string) {
 }
 
 async function handleAuthCallback(url: string) {
+  // Already authenticated
+  if (getUser()) {
+    return;
+  }
+
   const urlObj = new URL(url);
   const token = urlObj.searchParams.get("token");
   if (urlObj.pathname === "/success" && token) {

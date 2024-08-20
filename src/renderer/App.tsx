@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 
 // CSS
@@ -27,28 +26,11 @@ import SearchPage from "@Pages/SearchPage";
 import RoutePage from "@Pages/RoutePage";
 
 // Components
-import { ToastContainer, toast } from "react-toastify";
 import { AuthProvider } from "@Context/AuthContext";
 import EventHandler from "@Components/EventHandler";
+import ToastWrapper from "./lib/ToastWrapper";
 
 export default function App() {
-  // Connection status
-  useEffect(() => {
-    const updateOnlineStatus = () => {
-      navigator.onLine
-        ? toast.success("Connected", { autoClose: false })
-        : toast.error("Connection lost", { autoClose: false });
-    };
-
-    window.addEventListener("online", updateOnlineStatus);
-    window.addEventListener("offline", updateOnlineStatus);
-
-    // Cleanup function to remove event listeners
-    return () => {
-      window.removeEventListener("online", updateOnlineStatus);
-      window.removeEventListener("offline", updateOnlineStatus);
-    };
-  }, []);
   return (
     <SettingsProvider>
       <ThemeProvider
@@ -74,19 +56,8 @@ export default function App() {
             </Routes>
             <EventHandler />
           </Router>
-          <ToastContainer
-            position="bottom-right"
-            autoClose={5000}
-            limit={2}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
         </AuthProvider>
+        <ToastWrapper />
       </ThemeProvider>
     </SettingsProvider>
   );

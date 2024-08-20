@@ -99,7 +99,6 @@ export default function Favorite({
     if (loading || status === "loading") return;
     setLoading(true);
     if (status === "authenticated") {
-      console.log(1);
       try {
         const payload =
           await window.electron.ipcRenderer.getData<FavoriteResponse>(
@@ -107,7 +106,6 @@ export default function Favorite({
             id,
             { method: "POST", credentials: true, ttl: 0 }
           );
-        console.log(payload.data);
         if (payload?.data?.data) {
           window.electron.ipcRenderer.invalidate({
             tags: [`Favorite-${route._id}`],
@@ -120,7 +118,6 @@ export default function Favorite({
         toast.error("Error adding route to favorites");
       }
     } else {
-      console.log(2);
       await favoritesTable
         .add({
           _id: route._id,
@@ -134,6 +131,7 @@ export default function Favorite({
           values: route.values,
           verified: route.verified,
           featured: route.featured,
+          game: route.game,
           createdAt: route.createdAt,
           updatedAt: route.updatedAt,
           added: new Date(route.updatedAt),

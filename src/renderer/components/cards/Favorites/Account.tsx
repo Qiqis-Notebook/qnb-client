@@ -47,7 +47,6 @@ export default function AccountFavoriteCard({
         tags: ["Favorites", `Favorite-${routeId}`],
       });
       onDelete(routeId);
-      console.log("Delete");
 
       toast.success("Removed from favorites");
     } catch (error) {
@@ -86,6 +85,7 @@ export default function AccountFavoriteCard({
         values: route.values,
         verified: route.verified,
         featured: route.featured,
+        game: route.game,
         createdAt: route.createdAt,
         updatedAt: route.updatedAt,
         added: new Date(route.updatedAt),
