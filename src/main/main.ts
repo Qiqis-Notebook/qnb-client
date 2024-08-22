@@ -1,4 +1,8 @@
 import { app } from "electron";
+import path from "node:path";
+
+// Config
+import { CUSTOM_PROTOCOL } from "@Config/constants";
 
 // Utils
 import { updateElectronApp } from "update-electron-app";
@@ -26,6 +30,17 @@ initializeIPCHandlers();
 
 // Setup application events
 setupAppEvents();
+
+// Custom protocol
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient(CUSTOM_PROTOCOL, process.execPath, [
+      path.resolve(process.argv[1]),
+    ]);
+  }
+} else {
+  app.setAsDefaultProtocolClient(CUSTOM_PROTOCOL);
+}
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {

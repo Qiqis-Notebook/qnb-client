@@ -1,7 +1,7 @@
 const isDev = process.env.NODE_ENV === "development";
 
 // Custom Protocol
-export const CUSTOM_PROTOCOL = "qnb-client";
+export const CUSTOM_PROTOCOL = isDev ? "qnb-client-dev" : "qnb-client";
 
 // URLS
 const DEV_URL = "http://localhost.com";
@@ -15,9 +15,9 @@ export { isDev, DEV_URL, PROD_URL, BASE_URL, API_URL, LOGIN_URL };
 
 // Constants
 const MAIN_WIDTH = 1216;
-const MAIN_HEIGHT = 733;
+const MAIN_HEIGHT = 717;
 const MAIN_MIN_WIDTH = 1016;
-const MAIN_MIN_HEIGHT = 733;
+const MAIN_MIN_HEIGHT = 717;
 const ROUTE_WIDTH = 400;
 const ROUTE_HEIGHT = 375;
 const ROUTE_MIN_WIDTH = 400;

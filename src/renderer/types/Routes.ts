@@ -14,6 +14,8 @@ export interface RouteDetail {
   verified: boolean;
   featured: boolean;
   game: "Genshin" | "WuWa";
+  favorites?: number;
+  views?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -64,6 +66,8 @@ export interface RouteObject {
   verified: boolean;
   featured: boolean;
   game: "Genshin" | "WuWa";
+  favorites?: number;
+  views?: number;
   createdAt: string;
   updatedAt: string;
 }

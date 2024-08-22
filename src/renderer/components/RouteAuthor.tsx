@@ -1,52 +1,52 @@
+import { Link } from "react-router-dom";
+
+// Types
 import type { RouteDetail, RouteObject } from "@Types/Routes";
 import type DBFavorite from "../db/type/DBFavorite";
 import type DBRecent from "../db/type/DBRecent";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";
-import { CalendarDaysIcon, GamepadIcon, UserIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 
 export default function RouteAuthor({
   route,
 }: {
   route: RouteObject | RouteDetail | DBRecent | DBFavorite;
 }) {
-  const date = new Date(route.updatedAt);
-  return (
-    <div className="flex flex-row items-center gap-1 overflow-hidden @container">
-      <div className="inline-flex gap-1">
-        {route.author && route.author.image ? (
-          <img
-            src={route.author.image}
-            width={24}
-            height={24}
-            alt="User Icon"
-            className="rounded-full"
-            onError={(e) => {
-              {
-                e.currentTarget.src = Logo;
-              }
-            }}
-          />
-        ) : (
-          <UserIcon className="h-6 w-6" />
-        )}
-        <span className="truncate">
-          {route?.author?.displayName || "Traveler"}
-        </span>
-      </div>
-      <div className="@sm:inline-flex gap-1 hidden">
-        <CalendarDaysIcon className="ml-2 h-6 w-6" />
-        <span
-          title={`${date.toLocaleString()}`}
-        >{`${date.toLocaleDateString()}`}</span>
-      </div>
-      <div className="inline-flex gap-1">
-        <GamepadIcon className="h-6 w-6" />
-        <span title={route.game === "Genshin" ? "Genshin" : "Wuthering Waves"}>
-          {route.game}
-        </span>
-      </div>
+  const author = route.author;
+  return author ? (
+    <Link
+      to={`/u/${author._id}`}
+      target="_blank"
+      className="btn no-animation btn-xs inline-flex w-fit gap-1 px-0"
+    >
+      {author?.image ? (
+        <img
+          src={author.image || "/qiqiLogo.png"}
+          width={22}
+          height={22}
+          alt="User Icon"
+          className="aspect-square h-[22px] w-[22px] rounded-full"
+          onError={(e) => {
+            {
+              e.currentTarget.src = Logo;
+            }
+          }}
+        />
+      ) : (
+        <UserIcon className="aspect-square h-full" />
+      )}
+      {author.displayName ? (
+        <span className="text-sm">{author.displayName}</span>
+      ) : (
+        <span className="text-sm">{author?.displayName ?? "Traveler"}</span>
+      )}
+    </Link>
+  ) : (
+    <div className="btn btn-disabled no-animation btn-ghost btn-xs justify-start gap-1 px-0">
+      <UserIcon className="h-6 w-6 rounded-full" />
+      <span className="text-sm">{"Unknown Traveler"}</span>
     </div>
   );
 }

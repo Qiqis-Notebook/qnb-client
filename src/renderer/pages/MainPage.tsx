@@ -173,7 +173,7 @@ export default function MainPage() {
         </form>
       </div>
       {/* Featured */}
-      <div className="h-auto">
+      <div className="h-auto space-y-1">
         <div className="w-full text-center">Featured Routes</div>
         <Divider />
         {featured === null ? (
@@ -195,8 +195,8 @@ export default function MainPage() {
         )}
       </div>
       {/* Quick routes */}
-      <div className="w-full grid grid-cols-2 gap-2 grow">
-        <div className="flex flex-col h-full">
+      <div className="w-full grid grid-cols-2 gap-2">
+        <div className="flex flex-col space-y-1">
           <div className="w-full text-center">Favorite</div>
           <Divider />
           {favorite === null ? (
@@ -211,7 +211,7 @@ export default function MainPage() {
             <div className="text-center">No Favorites</div>
           )}
         </div>
-        <div className="h-full">
+        <div className="space-y-1">
           <div className="w-full text-center">Recent</div>
           <Divider />
           {recent === null ? (

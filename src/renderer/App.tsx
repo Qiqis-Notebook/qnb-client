@@ -15,7 +15,6 @@ import themes from "@Config/themes.json";
 // Layouts
 import MainLayout from "@Layouts/MainLayout";
 import FullPageLayout from "@Layouts/FullPageLayout";
-import RouteLayout from "@Layouts/RouteLayout";
 
 // Pages
 import MainPage from "@Pages/MainPage";
@@ -43,11 +42,11 @@ export default function App() {
             <Routes>
               <Route path="/" element={<MainLayout />}>
                 <Route path="/" element={<MainPage />} />
-                <Route path="routes" element={<RouteLayout />}>
+                <Route path="routes">
                   <Route path="recent" element={<RecentPage />} />
                   <Route path="search" element={<SearchPage />} />
+                  <Route path="favorites" element={<FavoritePage />} />
                 </Route>
-                <Route path="routes/favorites" element={<FavoritePage />} />
                 <Route path="setting" element={<SettingPage />} />
               </Route>
               <Route path="route" element={<FullPageLayout />}>

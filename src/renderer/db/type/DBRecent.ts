@@ -10,7 +10,7 @@ export default interface DBRecent {
   values: string[];
   verified: boolean;
   featured: boolean;
-  game: "Genshin" | "WuWa";
+  game?: "Genshin" | "WuWa";
   createdAt: string;
   updatedAt: string;
   added: Date;

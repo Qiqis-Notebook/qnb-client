@@ -50,10 +50,12 @@ export async function checkSession(token?: string): Promise<AuthUser | null> {
       user = response.data.user;
       return user;
     } else {
-      await keytar.deletePassword("Qiqi's Notebook", "auth_token");
+      user = null;
+      session = null;
       return null;
     }
   } catch (error) {
+    await keytar.deletePassword("Qiqi's Notebook", "auth_token");
     console.error(error);
     return null;
   }
