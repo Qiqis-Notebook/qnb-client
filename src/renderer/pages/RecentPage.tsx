@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 // Types
 import type { FormEvent } from "react";
@@ -125,7 +125,12 @@ export default function FavoritePage() {
                   params.page * ROUTES_PER_PAGE
                 )
                 .map((item, idx) => (
-                  <FullCard route={item} key={`fav-${idx}`} showBadge>
+                  <FullCard
+                    route={item}
+                    key={`fav-${idx}`}
+                    showBadge
+                    showMetrics={false}
+                  >
                     <button
                       className="btn-square btn-sm btn h-10 w-10 btn-ghost"
                       title="Delete from Recent"

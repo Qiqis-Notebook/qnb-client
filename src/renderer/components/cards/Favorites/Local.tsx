@@ -56,7 +56,7 @@ export default function LocalFavoriteCard({
   }
 
   return (
-    <FullCard route={route} showBadge>
+    <FullCard route={route} showBadge showMetrics={false}>
       <button
         className="btn btn-square btn-ghost btn-sm h-10 w-10"
         title="Delete"

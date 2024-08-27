@@ -245,31 +245,26 @@ export default function FavoritePage() {
                 favoritesData &&
                 favoritesData.data.totalDocuments > 0 && (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                    {favoritesData.data.routes
-                      .slice(
-                        (page - 1) * ROUTES_PER_PAGE,
-                        page * ROUTES_PER_PAGE
-                      )
-                      .map((item, idx) => (
-                        <AccountFavoriteCard
-                          key={`cloud-route-${idx}-${item._id}`}
-                          allowPin={favoriteCount < 5}
-                          route={item}
-                          onDelete={(routeId) => {
-                            setFavoritesData((prev) => ({
-                              ...prev,
-                              data: {
-                                ...prev.data,
-                                routes: prev.data.routes.filter(
-                                  (item) => item._id !== routeId
-                                ),
-                                totalDocuments: prev.data.totalDocuments - 1,
-                                totalPages: prev.data.totalPages - 1,
-                              },
-                            }));
-                          }}
-                        />
-                      ))}
+                    {favoritesData.data.routes.map((item, idx) => (
+                      <AccountFavoriteCard
+                        key={`cloud-route-${idx}-${item._id}`}
+                        allowPin={favoriteCount < 5}
+                        route={item}
+                        onDelete={(routeId) => {
+                          setFavoritesData((prev) => ({
+                            ...prev,
+                            data: {
+                              ...prev.data,
+                              routes: prev.data.routes.filter(
+                                (item) => item._id !== routeId
+                              ),
+                              totalDocuments: prev.data.totalDocuments - 1,
+                              totalPages: prev.data.totalPages - 1,
+                            },
+                          }));
+                        }}
+                      />
+                    ))}
                   </div>
                 )}
               {!fetching &&

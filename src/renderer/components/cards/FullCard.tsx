@@ -33,14 +33,22 @@ import { formatMetrics } from "@Utils/formatMetrics";
 export default function FullCard({
   route,
   showBadge = false,
+  showMetrics = true,
   children,
 }: {
   route: RouteDetail | DBFavorite | DBRecent;
+  showMetrics?: boolean;
   showBadge?: boolean;
   children?: ReactNode;
 }) {
   const { settings } = useSettings();
   const { title, verified, values, game } = route;
+  let views: number | undefined = undefined;
+  let favorites: number | undefined = undefined;
+  if ("views" in route && "favorites" in route) {
+    views = route.views;
+    favorites = route.favorites;
+  }
 
   return (
     <div
@@ -68,18 +76,15 @@ export default function FullCard({
             <span>{game}</span>
           </div>
         </div>
-        {/* @ts-ignore */}
-        {route?.views !== undefined && route?.favorites !== undefined && (
+        {showMetrics && views !== undefined && favorites !== undefined && (
           <div className="inline-flex gap-1">
             <div className="inline-flex gap-0.5" title="Views">
               <EyeIcon className="h-4 w-4" />
-              {/* @ts-ignore */}
-              <span>{formatMetrics(route.views)}</span>
+              <span>{formatMetrics(views)}</span>
             </div>
             <div className="inline-flex gap-0.5" title="Favorites">
               <HeartIcon className="h-4 w-4" />
-              {/* @ts-ignore */}
-              <span>{formatMetrics(route.favorites)}</span>
+              <span>{formatMetrics(favorites)}</span>
             </div>
           </div>
         )}

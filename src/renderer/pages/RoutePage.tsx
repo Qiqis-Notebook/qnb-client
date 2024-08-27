@@ -17,6 +17,7 @@ import Logo from "@Assets/qiqiLogo.png";
 import { ArrowLeftIcon, BadgeCheckIcon, CopyIcon } from "lucide-react";
 
 // Types
+import type DBRecent from "../db/type/DBRecent";
 import type { RouteDetail, RouteResponse } from "@Types/Routes";
 
 // Component
@@ -69,10 +70,19 @@ export default function RoutePage() {
   const addToRecent = async (routeDetail: RouteDetail) => {
     try {
       // Add the document to the "recent" table
-      await recentTable.put({
-        ...routeDetail,
+      const recentDetail: DBRecent = {
+        _id: routeDetail._id,
+        author: routeDetail.author,
+        title: routeDetail.title,
+        description: routeDetail.description,
+        values: routeDetail.values,
+        verified: routeDetail.verified,
+        featured: routeDetail.featured,
+        createdAt: routeDetail.createdAt,
+        updatedAt: routeDetail.updatedAt,
         added: new Date(),
-      });
+      };
+      await recentTable.put(recentDetail);
     } catch (error) {
       console.error("Error adding document:", error);
     }

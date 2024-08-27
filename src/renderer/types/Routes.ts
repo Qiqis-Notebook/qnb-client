@@ -20,11 +20,8 @@ export interface RouteDetail {
   updatedAt: string;
 }
 
-export interface RouteVanityObject extends Pick<RouteDetail, "_id"> {
-  vanity: string;
-}
 export interface RouteVanityResponse {
-  data: RouteVanityObject;
+  data: string;
   dt: string;
 }
 
