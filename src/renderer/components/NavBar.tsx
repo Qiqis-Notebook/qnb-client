@@ -1,10 +1,14 @@
 // Hooks
 import { useTheme } from "next-themes";
+import { Link } from "react-router-dom";
 
 // Assets
 import Logo from "@Assets/qiqiLogo.png";
 import DiscordIcon from "@Assets/DiscordIcon";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { Settings } from "lucide-react";
+
+// Config
+import { isDev } from "@Config/constants";
 
 // Data
 import themes from "@Config/themes.json";
@@ -12,8 +16,7 @@ import { routes } from "@Config/routes";
 
 // Components
 import NavList from "@Components/NavList";
-import { Link } from "react-router-dom";
-import { isDev } from "@Config/constants";
+import AuthButton from "./AuthButton";
 
 export default function NavBar() {
   const { theme, setTheme } = useTheme();
@@ -21,7 +24,7 @@ export default function NavBar() {
   return (
     <div className="flex h-screen flex-col overflow-y-auto overscroll-contain bg-base-200">
       {/* Logo */}
-      <div className="mx-4 flex flex-shrink-0 items-center justify-between py-2">
+      <div className="mx-2 flex flex-shrink-0 items-center justify-between py-2">
         <Link to="/" className="hidden h-9 items-center min-[0px]:flex">
           <img
             className="mr-1 min-w-0"
@@ -34,10 +37,15 @@ export default function NavBar() {
         </Link>
       </div>
       {/* Nav */}
-      <div className="px-4 pt-2 grow">
+      <div className="px-2 pt-2 grow">
         <NavList routes={routes} />
       </div>
-      <div className="px-6">
+      <div className="mx-2">
+        <AuthButton />
+      </div>
+      {/* Bottom info panel */}
+      <div className="px-2 pb-2 space-y-1">
+        <hr className="border-1 my-1 border-base-content opacity-20" />
         <select
           className="select-bordered select select-sm w-full font-normal"
           value={theme}
@@ -49,13 +57,9 @@ export default function NavBar() {
             </option>
           ))}
         </select>
-      </div>
-      {/* Bottom info panel */}
-      <div className="px-6 pb-6">
-        <hr className="border-1 my-4 border-base-content opacity-20" />
         <div className="flex flex-row gap-1">
           <Link to="/setting" className="btn-ghost btn-square btn-sm btn">
-            <Cog6ToothIcon className="w-full h-full" />
+            <Settings className="w-full h-full" />
           </Link>
           <a
             className="btn-ghost btn-square btn-sm btn"

@@ -5,7 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { MAX_ROUTE_DISPLAY } from "@Config/limits";
 
 // Types
-import type { RouteDetail, RouteVanityResponse } from "@Types/Routes";
+import type {
+  RouteDetail,
+  RouteListResponse,
+  RouteVanityResponse,
+} from "@Types/Routes";
 import type DBFavorite from "../db/type/DBFavorite";
 import type DBRecent from "../db/type/DBRecent";
 
@@ -14,7 +18,7 @@ import { favoritesTable, recentTable } from "../db";
 import { toast } from "react-toastify";
 
 // Assets
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { SearchIcon } from "lucide-react";
 
 // Components
 import Divider from "@Components/Divider";
@@ -60,10 +64,13 @@ export default function MainPage() {
         try {
           // Send a message to the main process to fetch data
           window.electron.ipcRenderer
-            .getData(`/gateway/vanity/route?vanity=${match[2]}`, id)
+            .getData<RouteVanityResponse>(
+              `/v1/gateway/vanity/route?vanity=${match[2]}`,
+              id
+            )
             .then((resp) => {
               if (resp && resp.data) {
-                const vanityId = (resp.data as RouteVanityResponse).data._id;
+                const vanityId = resp.data.data;
                 setLoading(false);
                 navigate(`/route/${vanityId}`);
               } else {
@@ -88,15 +95,17 @@ export default function MainPage() {
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
-          if (isMounted) {
-            if (resp && resp.data) {
-              setFeatured(resp.data.data.data as RouteDetail[]);
-            } else {
-              setFeatured([]);
+        window.electron.ipcRenderer
+          .getData<RouteListResponse>(apiUrl, requestId)
+          .then((resp) => {
+            if (isMounted) {
+              if (resp && resp.data) {
+                setFeatured(resp.data.data);
+              } else {
+                setFeatured([]);
+              }
             }
-          }
-        });
+          });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);
@@ -159,16 +168,12 @@ export default function MainPage() {
             disabled={loading}
             className="absolute inset-y-0 right-0 px-2"
           >
-            {loading ? (
-              <Spinner />
-            ) : (
-              <MagnifyingGlassIcon className="h-6 w-6" />
-            )}
+            {loading ? <Spinner /> : <SearchIcon className="h-6 w-6" />}
           </button>
         </form>
       </div>
       {/* Featured */}
-      <div className="h-auto">
+      <div className="h-auto space-y-1">
         <div className="w-full text-center">Featured Routes</div>
         <Divider />
         {featured === null ? (
@@ -190,8 +195,8 @@ export default function MainPage() {
         )}
       </div>
       {/* Quick routes */}
-      <div className="w-full grid grid-cols-2 gap-2 grow">
-        <div className="flex flex-col h-full">
+      <div className="w-full grid grid-cols-2 gap-2">
+        <div className="flex flex-col space-y-1">
           <div className="w-full text-center">Favorite</div>
           <Divider />
           {favorite === null ? (
@@ -206,7 +211,7 @@ export default function MainPage() {
             <div className="text-center">No Favorites</div>
           )}
         </div>
-        <div className="h-full">
+        <div className="space-y-1">
           <div className="w-full text-center">Recent</div>
           <Divider />
           {recent === null ? (

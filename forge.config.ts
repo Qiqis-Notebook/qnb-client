@@ -8,7 +8,7 @@ import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
 
-import { DEV_URL, PROD_URL } from "./config/constants";
+import { CUSTOM_PROTOCOL, DEV_URL, PROD_URL } from "./config/constants";
 
 import "dotenv/config";
 
@@ -25,6 +25,12 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     icon: "./assets/icons/icon",
+    protocols: [
+      {
+        name: "Qiqi's Notebook",
+        schemes: [CUSTOM_PROTOCOL],
+      },
+    ],
   },
   rebuildConfig: {},
   makers: [
@@ -64,6 +70,7 @@ const config: ForgeConfig = {
           },
         ],
       },
+      port: 3005,
     }),
   ],
   publishers: [

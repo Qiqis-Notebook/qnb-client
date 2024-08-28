@@ -1,10 +1,10 @@
 // Icons
 import {
   ChevronLeftIcon,
-  ChevronDoubleLeftIcon,
+  ChevronsLeftIcon,
   ChevronRightIcon,
-  ChevronDoubleRightIcon,
-} from "@heroicons/react/24/solid";
+  ChevronsRightIcon,
+} from "lucide-react";
 
 interface PaginationProps {
   totalPages: number;
@@ -77,7 +77,7 @@ function Pagination({
               disabled={isFirstPage}
               onClick={() => handlePageChange(1)}
             >
-              <ChevronDoubleLeftIcon className="h-6 w-6" />
+              <ChevronsLeftIcon className="h-6 w-6" />
             </button>
           </li>
           <li>
@@ -109,7 +109,7 @@ function Pagination({
               disabled={isLastPage}
               onClick={() => handlePageChange(upperTotal)}
             >
-              <ChevronDoubleRightIcon className="h-6 w-6" />
+              <ChevronsRightIcon className="h-6 w-6" />
             </button>
           </li>
         </ul>

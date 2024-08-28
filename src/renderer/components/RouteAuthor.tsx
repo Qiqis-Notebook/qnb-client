@@ -1,26 +1,33 @@
+import { Link } from "react-router-dom";
+
+// Types
 import type { RouteDetail, RouteObject } from "@Types/Routes";
 import type DBFavorite from "../db/type/DBFavorite";
 import type DBRecent from "../db/type/DBRecent";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";
-import { CalendarDaysIcon, UserIcon } from "@heroicons/react/24/outline";
+import { UserIcon } from "lucide-react";
 
 export default function RouteAuthor({
   route,
 }: {
   route: RouteObject | RouteDetail | DBRecent | DBFavorite;
 }) {
-  const date = new Date(route.updatedAt);
-  return (
-    <div className="flex flex-row items-center">
-      {route.author && route.author.image ? (
+  const author = route.author;
+  return author ? (
+    <Link
+      to={`/u/${author._id}`}
+      target="_blank"
+      className="btn no-animation btn-xs inline-flex w-fit gap-1 px-0"
+    >
+      {author?.image ? (
         <img
-          src={route.author.image}
-          width={24}
-          height={24}
+          src={author.image || "/qiqiLogo.png"}
+          width={22}
+          height={22}
           alt="User Icon"
-          className="rounded-full"
+          className="aspect-square h-[22px] w-[22px] rounded-full"
           onError={(e) => {
             {
               e.currentTarget.src = Logo;
@@ -28,16 +35,18 @@ export default function RouteAuthor({
           }}
         />
       ) : (
-        <UserIcon className="h-full w-4" title="Author" />
+        <UserIcon className="aspect-square h-full" />
       )}
-      <div className="ml-1 truncate">
-        {route?.author?.displayName || "Traveler"}
-      </div>
-      <CalendarDaysIcon className="ml-2 h-full w-4" title="Last updated" />
-      <div
-        className="ml-1"
-        title={`${date.toLocaleString()}`}
-      >{`${date.toLocaleDateString()}`}</div>
+      {author.displayName ? (
+        <span className="text-sm">{author.displayName}</span>
+      ) : (
+        <span className="text-sm">{author?.displayName ?? "Traveler"}</span>
+      )}
+    </Link>
+  ) : (
+    <div className="btn btn-disabled no-animation btn-ghost btn-xs justify-start gap-1 px-0">
+      <UserIcon className="h-6 w-6 rounded-full" />
+      <span className="text-sm">{"Unknown Traveler"}</span>
     </div>
   );
 }

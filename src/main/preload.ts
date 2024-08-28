@@ -1,11 +1,15 @@
+import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
+
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
-import type { AppSettings } from "@Types/AppSettings";
-import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
-export type Channels = "data-reply" | "window-event";
+// Types
+import type { AppSettings } from "@Types/AppSettings";
+import type { AuthUser } from "./utils/authentication";
+
+export type Channels = "window-event" | "auth" | "route";
 
 const electronHandler = {
   ipcRenderer: {
@@ -21,11 +25,20 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    getData(
+    getData<T>(
       url: string,
-      requestId: string
-    ): Promise<{ requestId: string; data?: any; error?: string }> {
-      return ipcRenderer.invoke("get-data", { url, requestId });
+      requestId: string,
+      options?: {
+        ttl?: number; // Cache TTL (seconds)
+        tags?: string[]; // Cache tag
+        method?: "GET" | "POST" | "DELETE";
+        credentials?: boolean;
+      }
+    ): Promise<{ requestId: string; data?: T; error?: string }> {
+      return ipcRenderer.invoke("get-data", { url, requestId, options });
+    },
+    invalidate({ url, tags }: { url?: string; tags?: string[] }) {
+      ipcRenderer.send("invalidate", { url, tags });
     },
     abortRequest(requestId: string) {
       ipcRenderer.send("abort-request", requestId);
@@ -38,6 +51,12 @@ const electronHandler = {
     },
     updateSetting(settings: AppSettings) {
       ipcRenderer.send("settings", settings);
+    },
+    session(): Promise<AuthUser | null> {
+      return ipcRenderer.invoke("session");
+    },
+    logout(): Promise<boolean> {
+      return ipcRenderer.invoke("logout");
     },
   },
 };

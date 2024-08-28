@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 
 // CSS
@@ -16,7 +15,6 @@ import themes from "@Config/themes.json";
 // Layouts
 import MainLayout from "@Layouts/MainLayout";
 import FullPageLayout from "@Layouts/FullPageLayout";
-import RouteLayout from "@Layouts/RouteLayout";
 
 // Pages
 import MainPage from "@Pages/MainPage";
@@ -27,26 +25,11 @@ import SearchPage from "@Pages/SearchPage";
 import RoutePage from "@Pages/RoutePage";
 
 // Components
-import { ToastContainer, toast } from "react-toastify";
+import { AuthProvider } from "@Context/AuthContext";
+import EventHandler from "@Components/EventHandler";
+import ToastWrapper from "./lib/ToastWrapper";
 
 export default function App() {
-  // Connection status
-  useEffect(() => {
-    const updateOnlineStatus = () => {
-      navigator.onLine
-        ? toast.success("Connected", { autoClose: false })
-        : toast.error("Connection lost", { autoClose: false });
-    };
-
-    window.addEventListener("online", updateOnlineStatus);
-    window.addEventListener("offline", updateOnlineStatus);
-
-    // Cleanup function to remove event listeners
-    return () => {
-      window.removeEventListener("online", updateOnlineStatus);
-      window.removeEventListener("offline", updateOnlineStatus);
-    };
-  }, []);
   return (
     <SettingsProvider>
       <ThemeProvider
@@ -54,34 +37,26 @@ export default function App() {
         themes={themes.map((item) => item.value)}
         defaultTheme="dark"
       >
-        <Router>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route path="/" element={<MainPage />} />
-              <Route path="routes" element={<RouteLayout />}>
-                <Route path="favorites" element={<FavoritePage />} />
-                <Route path="recent" element={<RecentPage />} />
-                <Route path="search" element={<SearchPage />} />
+        <AuthProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<MainLayout />}>
+                <Route path="/" element={<MainPage />} />
+                <Route path="routes">
+                  <Route path="recent" element={<RecentPage />} />
+                  <Route path="search" element={<SearchPage />} />
+                  <Route path="favorites" element={<FavoritePage />} />
+                </Route>
+                <Route path="setting" element={<SettingPage />} />
               </Route>
-              <Route path="setting" element={<SettingPage />} />
-            </Route>
-            <Route path="route" element={<FullPageLayout />}>
-              <Route path=":rid" element={<RoutePage />} />
-            </Route>
-          </Routes>
-        </Router>
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          limit={2}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+              <Route path="route" element={<FullPageLayout />}>
+                <Route path=":rid" element={<RoutePage />} />
+              </Route>
+            </Routes>
+            <EventHandler />
+          </Router>
+        </AuthProvider>
+        <ToastWrapper />
       </ThemeProvider>
     </SettingsProvider>
   );

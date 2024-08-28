@@ -14,14 +14,11 @@ import { recentTable } from "../db";
 
 // Asset
 import Logo from "@Assets/qiqiLogo.png";
-import {
-  ArrowLeftIcon,
-  CheckBadgeIcon,
-  ClipboardDocumentIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, BadgeCheckIcon, CopyIcon } from "lucide-react";
 
 // Types
-import type { RouteDetail, RouteObject } from "@Types/Routes";
+import type DBRecent from "../db/type/DBRecent";
+import type { RouteDetail, RouteResponse } from "@Types/Routes";
 
 // Component
 import Linkify from "linkify-react";
@@ -34,7 +31,7 @@ import Timer from "@Components/Timer";
 import StyledScrollbar from "@Components/StyledScrollbar";
 
 export default function RoutePage() {
-  let { rid } = useParams();
+  const { rid } = useParams();
   const navigate = useNavigate();
 
   const { settings } = useSettings();
@@ -73,10 +70,19 @@ export default function RoutePage() {
   const addToRecent = async (routeDetail: RouteDetail) => {
     try {
       // Add the document to the "recent" table
-      await recentTable.put({
-        ...routeDetail,
+      const recentDetail: DBRecent = {
+        _id: routeDetail._id,
+        author: routeDetail.author,
+        title: routeDetail.title,
+        description: routeDetail.description,
+        values: routeDetail.values,
+        verified: routeDetail.verified,
+        featured: routeDetail.featured,
+        createdAt: routeDetail.createdAt,
+        updatedAt: routeDetail.updatedAt,
         added: new Date(),
-      });
+      };
+      await recentTable.put(recentDetail);
     } catch (error) {
       console.error("Error adding document:", error);
     }
@@ -100,17 +106,21 @@ export default function RoutePage() {
   // Check route exist
   useEffect(() => {
     let isMounted = true;
+    setLoading(true);
+    setData(null);
     const fetchData = async (apiUrl: string, requestId: string) => {
       try {
         // Send a message to the main process to fetch data
-        window.electron.ipcRenderer.getData(apiUrl, requestId).then((resp) => {
-          if (isMounted) {
-            if (resp.data) {
-              setData(resp.data.data.data as RouteObject);
+        window.electron.ipcRenderer
+          .getData<RouteResponse>(apiUrl, requestId)
+          .then((resp) => {
+            if (isMounted) {
+              if (resp.data) {
+                setData(resp.data.data);
+              }
+              setLoading(false);
             }
-            setLoading(false);
-          }
-        });
+          });
       } catch (error) {
         console.error("Error fetching data:", error.message);
         toast.error(error);
@@ -140,9 +150,10 @@ export default function RoutePage() {
 
     return () => {
       window.electron.ipcRenderer.abortRequest(id);
+      window.electron.ipcRenderer.closeWindow();
       isMounted = false;
     };
-  }, []);
+  }, [rid]);
 
   // Action on data
   useEffect(() => {
@@ -189,7 +200,7 @@ export default function RoutePage() {
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
           {/* Timer */}
-          {data && <Timer start={startTimer} />}
+          {data && <Timer start={startTimer} key={rid} />}
         </div>
         {loading ? (
           <div className="w-full grow justify-center items-center flex">
@@ -210,10 +221,7 @@ export default function RoutePage() {
                 {/* Title */}
                 <div className="flex flex-row gap-1 w-full justify-center items-center">
                   {data.verified && (
-                    <CheckBadgeIcon
-                      className="h-8 w-8 text-green-400"
-                      title="Verified"
-                    />
+                    <BadgeCheckIcon className="h-8 w-8 text-green-400" />
                   )}
                   <div className="truncate text-2xl" title={data.title}>
                     {data.title}
@@ -245,13 +253,13 @@ export default function RoutePage() {
                 </StyledScrollbar>
                 {/* Actions */}
                 <div className="flex flex-row gap-2 w-full">
-                  <Favorite routeDetail={data} />
+                  <Favorite route={data} />
                   <button
                     className="btn btn-square"
                     title="Copy link"
                     onClick={handleCopy}
                   >
-                    <ClipboardDocumentIcon className="h-6 w-6" />
+                    <CopyIcon className="h-6 w-6" />
                   </button>
                   <button
                     className="btn grow"

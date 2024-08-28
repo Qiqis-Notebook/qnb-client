@@ -8,9 +8,9 @@ export default interface DBRecent {
   title: string;
   description: string;
   values: string[];
-  public: boolean;
   verified: boolean;
   featured: boolean;
+  game?: "Genshin" | "WuWa";
   createdAt: string;
   updatedAt: string;
   added: Date;

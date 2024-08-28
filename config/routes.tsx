@@ -1,6 +1,8 @@
-// Icon
+// Types
 import type { RouteObject } from "@Types/RouteTypes";
-import { HomeIcon, MapIcon } from "@heroicons/react/24/outline";
+
+// Icon
+import { HomeIcon, RouteIcon } from "lucide-react";
 
 export const routes: RouteObject[] = [
   {
@@ -10,7 +12,7 @@ export const routes: RouteObject[] = [
   },
   {
     title: "Routes",
-    icon: MapIcon,
+    icon: RouteIcon,
     child: [
       {
         title: "Favorites",

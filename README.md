@@ -79,7 +79,13 @@ npm start
 
 > There is no mock API server so all fetch requests to the local Qiqi's Notebook API endpoint will fail. You can mock the API response based on the type definition but limit the use of production API (from qiqis-notebook.com) to develop as it can result in Cloudflare Ban.
 
-> API url can be configured in `config/constants.ts`, the default development api url is `http://127.0.0.1:3001`
+> API url can be configured in `config/constants.ts`, the default development api url is `http://api.localhost.com`
+
+### Custom Protocol
+
+The application registers a custom protocol to be used for deeplinking.
+
+To manually remove the custom protocol, open `Regedit.exe` and navigate to `HKEY_CLASSES_ROOT\qnb-client` and remove the entire `qnb-client` entry.
 
 ## FAQ
 
