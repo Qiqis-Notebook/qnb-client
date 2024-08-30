@@ -6,13 +6,13 @@ import type { FormEvent } from "react";
 import type { RoutesResponse } from "@Types/Routes";
 interface RoutesParams {
   game?: "Genshin" | "WuWa";
-  query?: string;
+  query: string;
   page: number;
   sort?: "Favorites" | "Views";
 }
 const initialParams: RoutesParams = {
   game: undefined,
-  query: undefined,
+  query: "",
   page: 1,
   sort: undefined,
 };
@@ -122,7 +122,7 @@ export default function SearchPage() {
     if (isLoading) return;
     setParams({
       ...formData,
-      query: formData.query ? formData.query.trim() : undefined,
+      query: formData.query ? formData.query.trim() : "",
     });
   };
 
