@@ -1,5 +1,5 @@
 import { useState, useEffect, useId } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Types
 import type { FormEvent } from "react";
@@ -32,10 +32,17 @@ import GameSelector from "@Components/Search/GameSelector";
 import RouteSort from "@Components/Search/RouteSort";
 
 export default function SearchPage() {
+  let [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const [params, setParams] = useState<RoutesParams>(initialParams);
-  const [formData, setFormData] = useState<RoutesParams>(initialParams);
+  const [params, setParams] = useState<RoutesParams>({
+    ...initialParams,
+    query: searchParams.get("query") ?? "",
+  });
+  const [formData, setFormData] = useState<RoutesParams>({
+    ...initialParams,
+    query: searchParams.get("query") ?? "",
+  });
   const [data, setData] = useState<RoutesResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 

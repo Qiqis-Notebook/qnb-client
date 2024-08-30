@@ -43,9 +43,9 @@ export default function NavBar() {
       <div className="mx-2">
         <AuthButton />
       </div>
+      <hr className="mx-2 border-1 my-1 border-base-content opacity-20" />
       {/* Bottom info panel */}
       <div className="px-2 pb-2 space-y-1">
-        <hr className="border-1 my-1 border-base-content opacity-20" />
         <select
           className="select-bordered select select-sm w-full font-normal"
           value={theme}
