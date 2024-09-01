@@ -7,23 +7,32 @@ import { checkSession, getUser } from "../utils/authentication";
 // Windows
 import { mainWindow } from "../windows/mainWindow";
 
-export default function handleDeepLinks(url: string) {
-  const urlObj = new URL(url);
-  const { hostname, protocol } = urlObj;
+export default function handleDeepLinks(url?: string) {
+  if (!url) {
+    return;
+  }
 
-  // Check custom protocol
-  if (protocol !== `${CUSTOM_PROTOCOL}:`) return;
+  try {
+    const urlObj = new URL(url);
+    const { hostname, protocol } = urlObj;
 
-  switch (hostname) {
-    case "auth-callback":
-      handleAuthCallback(url);
-      break;
-    case "route-redirect":
-      handleRouteCallback(url);
-      break;
-    default:
-      console.error("No matching deep link handler");
-      break;
+    // Check custom protocol
+    if (protocol !== `${CUSTOM_PROTOCOL}:`) return;
+
+    switch (hostname) {
+      case "auth-callback":
+        handleAuthCallback(url);
+        break;
+      case "route-redirect":
+        handleRouteCallback(url);
+        break;
+      default:
+        console.error("No matching deep link handler");
+        break;
+    }
+  } catch (error) {
+    // Not url
+    return;
   }
 }
 
