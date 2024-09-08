@@ -8,7 +8,7 @@ import type {
 } from "@Types/Favorites";
 
 // Asset
-import { StarIcon } from "lucide-react";
+import { HeartIcon } from "lucide-react";
 
 // Authentication
 import { useAuth } from "../lib/useAuth";
@@ -17,6 +17,8 @@ import { useAuth } from "../lib/useAuth";
 import { toast } from "react-toastify";
 import { useLiveQuery } from "dexie-react-hooks";
 import { favoritesTable } from "../db";
+
+// Components
 import Spinner from "./Spinner";
 
 export default function Favorite({
@@ -209,7 +211,7 @@ export default function Favorite({
       disabled={loading}
       onClick={removeFavorite}
     >
-      <StarIcon className="fill-primary text-primary" />
+      <HeartIcon className="fill-primary text-primary" />
     </button>
   ) : (
     <button
@@ -218,7 +220,7 @@ export default function Favorite({
       disabled={loading}
       onClick={addFavorite}
     >
-      <StarIcon />
+      <HeartIcon />
     </button>
   );
 }
