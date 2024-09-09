@@ -12,6 +12,7 @@ const ignoreList = [
   "i_399",
   "i_400",
   "i_401",
+  "i_569",
 ];
 const groupLimit = 7;
 export default function AvatarList({ values = [] }: { values?: string[] }) {

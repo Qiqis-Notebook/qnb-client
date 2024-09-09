@@ -5,7 +5,7 @@ export const CUSTOM_PROTOCOL = isDev ? "qnb-client-dev" : "qnb-client";
 
 // URLS
 const DEV_URL = "http://localhost.com";
-const PROD_URL = "https://www.qiqis-notebook.com";
+const PROD_URL = "https://qiqis-notebook.com";
 const BASE_URL = isDev ? DEV_URL : PROD_URL;
 const API_URL = `${isDev ? "http" : "https"}://api.${
   isDev ? "localhost.com" : "qiqis-notebook.com"
