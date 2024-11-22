@@ -65,7 +65,7 @@ export default function MainPage() {
           // Send a message to the main process to fetch data
           window.electron.ipcRenderer
             .getData<RouteVanityResponse>(
-              `/v1/gateway/vanity/route?vanity=${match[2]}`,
+              `/gateway/vanity/route?vanity=${match[2]}`,
               id
             )
             .then((resp) => {

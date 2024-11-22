@@ -308,7 +308,7 @@ export default function SettingPage() {
                     <li>End</li>
                     <li>Page Up</li>
                     <li>Page Down</li>
-                    <li>{")!@#$%^&*(:;:+=<,_->.?/~`{][|}\"'"}</li>
+                    <li>{")!@#$%^&*(:;+=<,_->.?/~`{][|}\"'"}</li>
                   </ul>
                 </div>
               </div>
