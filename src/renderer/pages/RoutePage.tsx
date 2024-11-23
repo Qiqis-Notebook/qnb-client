@@ -80,6 +80,7 @@ export default function RoutePage() {
         featured: routeDetail.featured,
         createdAt: routeDetail.createdAt,
         updatedAt: routeDetail.updatedAt,
+        game: routeDetail.game,
         added: new Date(),
       };
       await recentTable.put(recentDetail);

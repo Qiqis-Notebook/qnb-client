@@ -9,19 +9,23 @@ interface RoutesParams {
   query: string;
   page: number;
   sort?: "Favorites" | "Views";
+  verified?: boolean;
+  featured?: boolean;
 }
 const initialParams: RoutesParams = {
   game: undefined,
   query: "",
   page: 1,
   sort: undefined,
+  verified: false,
+  featured: false,
 };
 
 // Utils
 import { toast } from "react-toastify";
 
 // Icons
-import { SearchIcon } from "lucide-react";
+import { BadgeCheckIcon, SearchIcon, StarsIcon } from "lucide-react";
 
 // Components
 import FullCard from "@Components/cards/FullCard";
@@ -90,15 +94,19 @@ export default function SearchPage() {
       }
     };
 
-    const { query, game, page, sort } = params;
+    const { query, game, page, sort, verified, featured } = params;
 
     fetchData(
       query
         ? `/api/routes?query=${encodeURI(query)}${
             game ? `&game=${game}` : ""
-          }&page=${page}${sort ? `&sort=${sort}` : ""}`
+          }&page=${page}${sort ? `&sort=${sort}` : ""}${
+            verified ? `&verified=${verified}` : ""
+          }${featured ? `&featured=${featured}` : ""}`
         : `/gateway/routes?page=${page}${game ? `&game=${game}` : ""}${
             sort ? `&sort=${sort}` : ""
+          }${verified ? `&verified=${verified}` : ""}${
+            featured ? `&featured=${featured}` : ""
           }`,
       id,
       query ? 0 : 300
@@ -128,6 +136,7 @@ export default function SearchPage() {
 
   return (
     <div className="flex flex-col gap-2 grow p-2">
+      {/* Filters */}
       <div className="flex w-full flex-row justify-between">
         <GameSelector
           game={formData.game ?? null}
@@ -145,6 +154,50 @@ export default function SearchPage() {
             setFormData((prev) => ({ ...prev, sort: value ?? undefined }));
           }}
         />
+      </div>
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <div className="form-control col-span-1 rounded-md bg-base-300 p-1">
+          <label className="label cursor-pointer">
+            <span className="label-text inline-flex items-center gap-1">
+              <span>
+                <BadgeCheckIcon className="h-6 w-6 text-success" />
+              </span>{" "}
+              Verified
+            </span>
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={formData.verified}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  verified: e.target.checked,
+                }));
+              }}
+            />
+          </label>
+        </div>
+        <div className="form-control col-span-1 rounded-md bg-base-300 p-1">
+          <label className="label cursor-pointer">
+            <span className="label-text inline-flex items-center gap-1">
+              <span>
+                <StarsIcon className="h-6 w-6 text-primary" />
+              </span>{" "}
+              Featured
+            </span>
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={formData.featured}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  featured: e.target.checked,
+                }));
+              }}
+            />
+          </label>
+        </div>
       </div>
       {/* Search bar */}
       <div className="flex items-center">
