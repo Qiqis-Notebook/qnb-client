@@ -32,6 +32,7 @@ initializeIPCHandlers();
 setupAppEvents();
 
 // Custom protocol
+let deepLink: null | string = null; // Store the deep link URL for cold start
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
     app.setAsDefaultProtocolClient(CUSTOM_PROTOCOL, process.execPath, [
@@ -56,8 +57,13 @@ if (!gotTheLock) {
     handleDeepLinks(commandLine.pop());
   });
 
+  // Capture deep link from cold start
+  if (process.argv.length > 1) {
+    deepLink = process.argv.pop(); // Capture deep link from argv if app is cold-started
+  }
+
   // Create mainWindow, load the rest of the app, etc...
   app.whenReady().then(() => {
-    createMainWindow();
+    createMainWindow({ deepLink: deepLink });
   });
 }
