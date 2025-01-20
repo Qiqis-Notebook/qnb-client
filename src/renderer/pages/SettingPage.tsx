@@ -104,6 +104,7 @@ export default function SettingPage() {
                 />
               </div>
             </div>
+            <div className="divider h-1 my-0" />
             {/* Click-through window */}
             <div className="flex flex-col gap-2">
               <h2 className="text-lg">Click-through</h2>
